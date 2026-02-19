@@ -63,10 +63,3 @@ to add, list, complete, and delete tasks. Tasks are stored in a local JSON file.
 8. JSON file format matches the data model specification.
 
 
-uv run dkmv dev \
-  https://github.com/asaficontact/todo_app.git \
-  --prd ./todo_prd.md \
-  --branch feature/todo-app \
-  --feature-name "todo-app" \
-  --max-turns 50 \
-  --keep-alive
