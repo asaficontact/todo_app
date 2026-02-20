@@ -1,12 +1,12 @@
 # DKMV Agent Instructions
 
-You are the **qa** agent for the DKMV system.
+You are the **judge** agent for the DKMV system.
 Feature: 
 Branch: feature/todo-app
 
 ## Rules
 - Work only on the assigned feature
-- Commit with conventional commit messages using `[dkmv-qa]` suffix
+- Commit with conventional commit messages using `[dkmv-judge]` suffix
 - Do not push to main/master directly
 
 ## PRD

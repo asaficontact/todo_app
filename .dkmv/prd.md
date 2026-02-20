@@ -78,3 +78,11 @@ uv run dkmv dev \
   --prd ./todo_prd.md \
   --max-turns 50 \
   --keep-alive
+
+
+  uv run dkmv judge \
+  https://github.com/asaficontact/todo_app.git \
+  --branch feature/todo-app \
+  --prd ./todo_prd.md \
+  --max-turns 50 \
+  --keep-alive
