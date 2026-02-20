@@ -48,3 +48,33 @@ to add, list, complete, and delete tasks. Tasks are stored in a local JSON file.
 - Type hints on all functions.
 - No external dependencies (stdlib only for the app itself).
 - pytest for testing.
+
+## Evaluation Criteria
+
+> **Note:** This section is hidden from the Dev agent and only visible to QA and Judge.
+
+1. All four commands work correctly: add, list, complete, delete.
+2. Tasks persist across invocations (stored in todos.json).
+3. Error handling works for invalid task IDs.
+4. Status filtering works on the list command.
+5. At least 5 unit tests exist and all pass.
+6. Code uses type hints on all function signatures.
+7. The app is runnable via `python -m todo`.
+8. JSON file format matches the data model specification.
+
+
+uv run dkmv dev \
+  https://github.com/asaficontact/todo_app.git \
+  --prd ./todo_prd.md \
+  --branch feature/todo-app \
+  --feature-name "todo-app" \
+  --max-turns 50 \
+  --keep-alive
+
+
+  uv run dkmv qa \
+  https://github.com/asaficontact/todo_app.git \
+  --branch feature/todo-app \
+  --prd ./todo_prd.md \
+  --max-turns 50 \
+  --keep-alive
