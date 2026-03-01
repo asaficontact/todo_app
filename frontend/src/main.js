@@ -20,6 +20,7 @@ async function bootstrap() {
     { initFilterControls },
     ActionPanel,
     { Interaction },
+    { ProgressRing },
   ] = await Promise.all([
     import('./scene.js'),
     import('./ui/labels.js'),
@@ -29,9 +30,10 @@ async function bootstrap() {
     import('./ui/filter-controls.js'),
     import('./ui/action-panel.js'),
     import('./interaction.js'),
+    import('./progress-ring.js'),
   ]);
 
-  const { initSceneStore, reconstructScene, showEmptyState, setParticles, getAllMeshes, getMeshForTask, reorderTask } = sceneStoreModule;
+  const { initSceneStore, reconstructScene, showEmptyState, setParticles, setProgressRing, getAllMeshes, getMeshForTask, reorderTask } = sceneStoreModule;
   const { init, startLoop, scene: threeScene, camera, renderer, notifyInteraction, playIntroSequence, render } = sceneModule;
 
   const container = document.getElementById('app');
@@ -47,6 +49,10 @@ async function bootstrap() {
   particles.setCamera(camera);
   setParticles(particles);
 
+  // Progress ring (T090)
+  const progressRing = new ProgressRing(threeScene);
+  setProgressRing(progressRing);
+
   // Filter controls (T061)
   initFilterControls(store);
 
@@ -56,6 +62,7 @@ async function bootstrap() {
   // Reconstruct persisted tasks or show empty state
   if (store.getTasks().length > 0) {
     reconstructScene(store);
+    progressRing.setRatio(store.getCompletionRatio());
   } else {
     showEmptyState();
   }
@@ -127,6 +134,7 @@ async function bootstrap() {
 
   startLoop(delta => {
     particles.update(delta);
+    progressRing.update(delta);
     updateStarfield(starfield, delta);
     render(delta);
     labelRenderer.render(threeScene, camera);

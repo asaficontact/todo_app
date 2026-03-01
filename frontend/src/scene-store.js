@@ -17,6 +17,10 @@ let _scene = null;
 let _store = null;
 let _particles = null;
 let _emptyStateObj = null;
+let _progressRing = null;
+
+// T095: Victory sequence state
+let _victoryPlayed = false;
 
 export function initSceneStore(threeScene, store, _labelRenderer) {
   _scene = threeScene;
@@ -49,6 +53,25 @@ export function getTaskWorldPosition(id) {
 
 export function setParticles(particles) {
   _particles = particles;
+}
+
+export function setProgressRing(ring) {
+  _progressRing = ring;
+}
+
+// T091: Update ring whenever ratio changes
+function _updateRing() {
+  if (_progressRing && _store) _progressRing.setRatio(_store.getCompletionRatio());
+}
+
+// T096: Victory sequence
+function _playVictorySequence() {
+  if (_particles) _particles.burst({ x: 0, y: 5.5, z: 0 }, 'complete', 150);
+  if (_progressRing) {
+    _progressRing.playVictoryShatter(() => {
+      _progressRing.setRatio(1.0);
+    });
+  }
 }
 
 // ── Filter integration (T062 / T063) ─────────────────────────────────────────
@@ -126,6 +149,9 @@ function _onAdded(task) {
   _spawnMeshWithAnimation(task);
   _repositionAll(task.id);
   _spikeBloom(3.0, 0.2);
+  // T095: Reset victory eligibility when a new task is added
+  _victoryPlayed = false;
+  _updateRing();
 }
 
 function _onCompletedChange(task, isCompleting) {
@@ -139,6 +165,22 @@ function _onCompletedChange(task, isCompleting) {
     _particles.burst(tm.mesh.position, 'complete', 70);
     _spikeBloom(4.0, 0.3);
   }
+
+  // T091 + T093: Update ring ratio and pulse
+  _updateRing();
+  if (_progressRing) {
+    _progressRing.pulse(isCompleting ? 'up' : 'down');
+  }
+
+  // T095: Victory detection — only on completion, not uncomplete
+  if (isCompleting && _store) {
+    const tasks = _store.getTasks();
+    const allDone = tasks.length > 0 && tasks.every(t => t.completed);
+    if (allDone && !_victoryPlayed) {
+      _victoryPlayed = true;
+      _playVictorySequence();
+    }
+  }
 }
 
 function _onEdited(task) {
@@ -148,7 +190,7 @@ function _onEdited(task) {
   playEditAnimation(tm);
 }
 
-function _onDeleted(id, _task) {
+function _onDeleted(id, task) {
   const tm = meshRegistry.get(id);
   if (!tm) return;
   meshRegistry.delete(id);
@@ -162,6 +204,16 @@ function _onDeleted(id, _task) {
     _repositionAll();
   });
   _repositionAll();
+
+  // T094: Ring deflation — animate if completed task deleted, snap if not
+  if (_progressRing && _store) {
+    const newRatio = _store.getCompletionRatio();
+    if (task?.completed) {
+      _progressRing.animateToRatio(newRatio, 0.5);
+    } else {
+      _progressRing.setRatio(newRatio);
+    }
+  }
 }
 
 // ── Bloom spike helper (T074) ────────────────────────────────────────────────
