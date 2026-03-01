@@ -1,0 +1,17 @@
+{
+  "feature_count": 10,
+  "story_count": 22,
+  "feature_ids": ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10"],
+  "categories": [
+    "Foundation & Compatibility",
+    "Core Task Management",
+    "3D Scene & Rendering",
+    "Cinematic Animations",
+    "Particle System",
+    "Task Persistence",
+    "Task Filtering & Organization",
+    "3D Interaction",
+    "Visual Polish",
+    "Progress & Motivation"
+  ]
+}
