@@ -110,7 +110,10 @@ export class Store extends EventEmitter {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) this.#tasks = parsed;
+        if (Array.isArray(parsed)) {
+          const isValid = t => t && typeof t.id === 'string' && typeof t.title === 'string';
+          this.#tasks = parsed.filter(isValid);
+        }
       }
       const filter = localStorage.getItem(FILTER_KEY);
       if (filter && ['all', 'active', 'done'].includes(filter)) {

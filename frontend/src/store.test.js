@@ -318,6 +318,70 @@ describe('Store', () => {
     });
   });
 
+  // ── task validation in hydration ───────────────────────────────────────────
+
+  describe('localStorage task validation', () => {
+    it('filters out tasks missing id', () => {
+      localStorageMock.setItem('dkmv-todos', JSON.stringify([
+        { title: 'No id', completed: false },
+        { id: 'valid-id', title: 'Valid', completed: false },
+      ]));
+      const s = new Store();
+      expect(s.getTasks()).toHaveLength(1);
+      expect(s.getTasks()[0].title).toBe('Valid');
+    });
+
+    it('filters out tasks missing title', () => {
+      localStorageMock.setItem('dkmv-todos', JSON.stringify([
+        { id: 'abc', completed: false },
+        { id: 'def', title: 'Has title', completed: false },
+      ]));
+      const s = new Store();
+      expect(s.getTasks()).toHaveLength(1);
+    });
+
+    it('handles null stored value gracefully', () => {
+      localStorageMock.setItem('dkmv-todos', 'null');
+      const s = new Store();
+      expect(s.getTasks()).toHaveLength(0);
+    });
+
+    it('handles object (non-array) stored value gracefully', () => {
+      localStorageMock.setItem('dkmv-todos', JSON.stringify({ broken: true }));
+      const s = new Store();
+      expect(s.getTasks()).toHaveLength(0);
+    });
+
+    it('round-trips 50 tasks without data loss', () => {
+      for (let i = 0; i < 50; i++) store.addTask(`Task ${i}`);
+      const s2 = new Store();
+      expect(s2.getTasks()).toHaveLength(50);
+      expect(s2.getTasks()[0].title).toBe('Task 0');
+      expect(s2.getTasks()[49].title).toBe('Task 49');
+    });
+  });
+
+  // ── filter persistence ─────────────────────────────────────────────────────
+
+  describe('filter persistence', () => {
+    it('persists filter to localStorage on setFilter', () => {
+      store.setFilter('active');
+      expect(localStorageMock.getItem('dkmv-filter')).toBe('active');
+    });
+
+    it('restores filter from localStorage on new Store instance', () => {
+      store.setFilter('done');
+      const s2 = new Store();
+      expect(s2.getFilter()).toBe('done');
+    });
+
+    it('ignores unknown filter values from localStorage', () => {
+      localStorageMock.setItem('dkmv-filter', 'bogus-value');
+      const s2 = new Store();
+      expect(s2.getFilter()).toBe('all');
+    });
+  });
+
   // ── EventEmitter delegation ────────────────────────────────────────────────
 
   describe('EventEmitter methods', () => {

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
+import gsap from 'gsap';
 
 export let renderer, camera, scene;
 
@@ -57,6 +58,14 @@ export function startLoop(onFrame) {
 
 export function notifyInteraction() {
   _lastInteraction = Date.now();
+}
+
+export function playIntroSequence() {
+  camera.position.set(0, -4, 35);
+  camera.rotation.x = THREE.MathUtils.degToRad(10);
+  gsap.timeline()
+    .to(camera.position, { z: 18, y: 0, duration: 1.8, ease: 'power4.out' })
+    .to(camera.rotation, { x: 0, duration: 1.5, ease: 'power3.out' }, '<');
 }
 
 function updateCameraDrift(elapsed) {

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import gsap from 'gsap';
 
 export class TaskMesh {
   constructor(task) {
@@ -45,6 +46,24 @@ export class TaskMesh {
     this.material.transmission = completed ? 0.3 : 0.85;
     this.material.emissiveIntensity = completed ? 0.05 : 0.3;
     this.material.color.set(completed ? 0x334455 : 0x88ccff);
+  }
+
+  reposition({ x, y, z }, animate = false) {
+    if (!animate) {
+      this.mesh.position.set(x, y, z);
+    } else {
+      this._targetPosition = { x, y, z };
+      this.tweenToPosition({ x, y, z });
+    }
+  }
+
+  tweenToPosition({ x, y, z }) {
+    gsap.to(this.mesh.position, {
+      x, y, z,
+      duration: 0.5,
+      ease: 'power4.out',
+      overwrite: 'auto',
+    });
   }
 
   dispose() {
