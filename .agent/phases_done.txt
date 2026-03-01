@@ -1,0 +1,5 @@
+Output directory: docs/implementation/mind-blowing-todo
+Phases: 5
+Total tasks: 68
+Phase documents: phase1_foundation.md, phase2_core-visual.md, phase3_enhancement.md, phase4_polish.md, phase5_verification.md
+Task ID range: T010-T124

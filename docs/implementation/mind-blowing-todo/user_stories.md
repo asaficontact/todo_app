@@ -8,28 +8,28 @@
 
 | US ID | Title | Feature | Task(s) | Status |
 |-------|-------|---------|---------|--------|
-| US-01 | Add a New Task | F1 | TBD | [ ] |
-| US-02 | Mark a Task Complete | F1 | TBD | [ ] |
-| US-03 | Delete a Task | F1 | TBD | [ ] |
-| US-04 | Edit a Task | F1 | TBD | [ ] |
-| US-05 | Tasks Rendered as 3D Objects | F2 | TBD | [ ] |
-| US-06 | Smooth 60 FPS Scene | F2 | TBD | [ ] |
-| US-07 | Dramatic Task Creation Animation | F3 | TBD | [ ] |
-| US-08 | Satisfying Task Completion Effect | F3 | TBD | [ ] |
-| US-09 | Mouse-Reactive Ambient Particles | F4 | TBD | [ ] |
-| US-10 | Task-Event Particle Bursts | F4 | TBD | [ ] |
-| US-11 | Tasks Survive Page Reload | F5 | TBD | [ ] |
-| US-12 | Scene Reconstructs on Load | F5 | TBD | [ ] |
-| US-13 | Filter Tasks by Status | F6 | TBD | [ ] |
-| US-14 | Scene Reorganizes on Filter Change | F6 | TBD | [ ] |
-| US-15 | Click and Hover Task Cards | F7 | TBD | [ ] |
-| US-16 | Drag Task Cards in 3D Space | F7 | TBD | [ ] |
-| US-17 | Bloom Glow on Task Cards | F8 | TBD | [ ] |
-| US-18 | Cinematic Post-Processing Effects | F8 | TBD | [ ] |
-| US-19 | Dramatic Progress Indicator | F9 | TBD | [ ] |
-| US-20 | Progress Animates on Completion | F9 | TBD | [ ] |
-| US-21 | Clear WebGL Unsupported Message | F10 | TBD | [ ] |
-| US-22 | Crash-Free WebGL Absence | F10 | TBD | [ ] |
+| US-01 | Add a New Task | F1 | T013, T014, T026 | [ ] |
+| US-02 | Mark a Task Complete | F1 | T013, T024, T066 | [ ] |
+| US-03 | Delete a Task | F1 | T013, T024, T033, T066 | [ ] |
+| US-04 | Edit a Task | F1 | T013, T014, T034, T066 | [ ] |
+| US-05 | Tasks Rendered as 3D Objects | F2 | T019, T021, T022, T023, T024 | [ ] |
+| US-06 | Smooth 60 FPS Scene | F2 | T017, T018, T025, T120 | [ ] |
+| US-07 | Dramatic Task Creation Animation | F3 | T031, T035 | [ ] |
+| US-08 | Satisfying Task Completion Effect | F3 | T032, T039 | [ ] |
+| US-09 | Mouse-Reactive Ambient Particles | F4 | T036, T037, T038 | [ ] |
+| US-10 | Task-Event Particle Bursts | F4 | T039, T040 | [ ] |
+| US-11 | Tasks Survive Page Reload | F5 | T041, T042, T043, T048 | [ ] |
+| US-12 | Scene Reconstructs on Load | F5 | T044, T045, T046 | [ ] |
+| US-13 | Filter Tasks by Status | F6 | T047, T060, T061 | [ ] |
+| US-14 | Scene Reorganizes on Filter Change | F6 | T062, T063 | [ ] |
+| US-15 | Click and Hover Task Cards | F7 | T064, T065, T066, T067 | [ ] |
+| US-16 | Drag Task Cards in 3D Space | F7 | T068, T069, T070, T071 | [ ] |
+| US-17 | Bloom Glow on Task Cards | F8 | T072, T073 | [ ] |
+| US-18 | Cinematic Post-Processing Effects | F8 | T074, T075, T076 | [ ] |
+| US-19 | Dramatic Progress Indicator | F9 | T090, T091, T092 | [ ] |
+| US-20 | Progress Animates on Completion | F9 | T093, T094, T095, T096, T097 | [ ] |
+| US-21 | Clear WebGL Unsupported Message | F10 | T016, T124 | [ ] |
+| US-22 | Crash-Free WebGL Absence | F10 | T015, T026 | [ ] |
 
 ---
 
@@ -50,7 +50,7 @@
 - [ ] The fallback MUST appear within 500ms of page load
 - [ ] No unhandled JavaScript errors MUST appear in the browser console during the fallback flow
 
-**Feature:** F10 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F10 | **Tasks:** T016, T124 | **Priority:** Must-have
 
 ---
 
@@ -66,7 +66,7 @@
 - [ ] If WebGL is unavailable, `scene.js` initialization MUST be aborted and fallback shown
 - [ ] `store.js` and the task CRUD layer MUST still initialize (they have no WebGL dependency)
 
-**Feature:** F10 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F10 | **Tasks:** T015, T026 | **Priority:** Must-have
 
 ---
 
@@ -86,7 +86,7 @@
 - [ ] Pressing Escape MUST close the form without creating a task
 - [ ] Submitting an empty title MUST be rejected with an inline validation message
 
-**Feature:** F1 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F1 | **Tasks:** T013, T014, T026 | **Priority:** Must-have
 
 ---
 
@@ -102,7 +102,7 @@
   (dimmed material, title strikethrough or faded label)
 - [ ] Clicking complete on an already-completed task MUST toggle it back to active
 
-**Feature:** F1 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F1 | **Tasks:** T013, T024, T066 | **Priority:** Must-have
 
 ---
 
@@ -120,7 +120,7 @@
   scene graph (no ghost objects)
 - [ ] Remaining cards MUST smoothly reflow to fill the vacated grid slot
 
-**Feature:** F1 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F1 | **Tasks:** T013, T024, T033, T066 | **Priority:** Must-have
 
 ---
 
@@ -136,7 +136,7 @@
 - [ ] Cancelling an edit MUST leave the task unchanged in the store
 - [ ] Submitting an empty title MUST be rejected with an inline validation message
 
-**Feature:** F1 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F1 | **Tasks:** T013, T014, T034, T066 | **Priority:** Must-have
 
 ---
 
@@ -156,7 +156,7 @@
 - [ ] The scene MUST render at a consistent 60 FPS with up to 20 active task cards
   on modern mid-tier hardware
 
-**Feature:** F2 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F2 | **Tasks:** T019, T021, T022, T023, T024 | **Priority:** Must-have
 
 ---
 
@@ -174,7 +174,7 @@
 - [ ] The camera MUST perform a gentle idle drift/rotation to give the scene life when
   the user is inactive
 
-**Feature:** F2 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F2 | **Tasks:** T017, T018, T025, T120 | **Priority:** Must-have
 
 ---
 
@@ -195,7 +195,7 @@
 - [ ] Adding a second task while the first card is still animating MUST not break
   the scene layout
 
-**Feature:** F3 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F3 | **Tasks:** T031, T035 | **Priority:** Must-have
 
 ---
 
@@ -214,7 +214,7 @@
 - [ ] The completed card's material MUST remain visible but clearly distinct
   (desaturated or dimmed) after the animation
 
-**Feature:** F3 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F3 | **Tasks:** T032, T039 | **Priority:** Must-have
 
 ---
 
@@ -233,7 +233,7 @@
   particles on mid-tier hardware
 - [ ] Particles MUST maintain a minimum clearance from task card surfaces
 
-**Feature:** F4 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F4 | **Tasks:** T036, T037, T038 | **Priority:** Should-have
 
 ---
 
@@ -253,7 +253,7 @@
 - [ ] Three simultaneous task events MUST not cause visible frame drops or broken
   particle state
 
-**Feature:** F4 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F4 | **Tasks:** T039, T040 | **Priority:** Should-have
 
 ---
 
@@ -272,7 +272,7 @@
 - [ ] If `localStorage` is unavailable (e.g., private browsing with strict settings),
   the app MUST continue to function — tasks just won't persist
 
-**Feature:** F5 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F5 | **Tasks:** T041, T042, T043, T048 | **Priority:** Must-have
 
 ---
 
@@ -288,7 +288,7 @@
 - [ ] The scene MUST become fully interactive only after the entrance sequence completes
 - [ ] If no tasks are persisted, a welcome animation or empty-state hint MUST appear
 
-**Feature:** F5 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F5 | **Tasks:** T044, T045, T046 | **Priority:** Must-have
 
 ---
 
@@ -307,7 +307,7 @@
 - [ ] `store.getFilteredTasks(filter)` MUST return the correct subset of tasks
 - [ ] Filter state MUST persist across page reloads
 
-**Feature:** F6 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F6 | **Tasks:** T047, T060, T061 | **Priority:** Should-have
 
 ---
 
@@ -325,7 +325,7 @@
 - [ ] Rapid filter switching (< 300ms between clicks) MUST not leave orphaned or
   mispositioned cards
 
-**Feature:** F6 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F6 | **Tasks:** T062, T063 | **Priority:** Should-have
 
 ---
 
@@ -345,7 +345,7 @@
   (complete / edit / delete)
 - [ ] Hover and click feedback MUST respond within one animation frame of the pointer event
 
-**Feature:** F7 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F7 | **Tasks:** T064, T065, T066, T067 | **Priority:** Must-have
 
 ---
 
@@ -362,7 +362,7 @@
 - [ ] Dragging past other cards MUST cause them to shift positions with smooth GSAP tweens
 - [ ] The new order MUST be saved to the store and persisted to `localStorage` on drop
 
-**Feature:** F7 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F7 | **Tasks:** T068, T069, T070, T071 | **Priority:** Should-have
 
 ---
 
@@ -381,7 +381,7 @@
 - [ ] `EffectComposer` MUST be the rendering pipeline (renderer output feeds the composer)
 - [ ] A `BLOOM_STRENGTH` constant in `scene.js` MUST control the effect's base intensity
 
-**Feature:** F8 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F8 | **Tasks:** T072, T073 | **Priority:** Must-have
 
 ---
 
@@ -399,7 +399,7 @@
 - [ ] A `ENABLE_POST_PROCESSING` constant MUST exist for debug toggling with zero
   other code changes
 
-**Feature:** F8 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F8 | **Tasks:** T074, T075, T076 | **Priority:** Should-have
 
 ---
 
@@ -418,7 +418,7 @@
 - [ ] When zero tasks exist, the progress object MUST display a neutral idle state
 - [ ] The progress object MUST be visually distinct from task cards in shape and color
 
-**Feature:** F9 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F9 | **Tasks:** T090, T091, T092 | **Priority:** Should-have
 
 ---
 
@@ -437,4 +437,4 @@
   to the new ratio
 - [ ] The ring's emissive color MUST interpolate from cool blue (0%) to gold/white (100%)
 
-**Feature:** F9 | **Tasks:** TBD | **Priority:** Should-have
+**Feature:** F9 | **Tasks:** T093, T094, T095, T096, T097 | **Priority:** Should-have

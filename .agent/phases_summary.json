@@ -1,0 +1,49 @@
+{
+  "phase_count": 5,
+  "task_count": 68,
+  "task_id_range": "T010-T124",
+  "phase_filenames": [
+    "phase1_foundation.md",
+    "phase2_core-visual.md",
+    "phase3_enhancement.md",
+    "phase4_polish.md",
+    "phase5_verification.md"
+  ],
+  "phase_summaries": {
+    "phase1_foundation": {
+      "name": "Foundation",
+      "features": ["F10", "F1", "F2"],
+      "task_range": "T010-T027",
+      "task_count": 18,
+      "goal": "Working 3D todo app with dark void scene, crystalline task cards, CRUD operations, and unit-tested store"
+    },
+    "phase2_core-visual": {
+      "name": "Core Visual",
+      "features": ["F3", "F4", "F5"],
+      "task_range": "T030-T049",
+      "task_count": 20,
+      "goal": "Cinematic GSAP animations for all CRUD operations, 2000-particle ambient system with mouse attraction and event bursts, localStorage persistence with staggered entrance"
+    },
+    "phase3_enhancement": {
+      "name": "Enhancement",
+      "features": ["F6", "F7", "F8"],
+      "task_range": "T060-T076",
+      "task_count": 17,
+      "goal": "Filter UI with animated scene reorganization, raycaster hover/click/3D drag-drop interaction, EffectComposer with bloom/chromatic aberration/vignette and auto-disable FPS guard"
+    },
+    "phase4_polish": {
+      "name": "Polish",
+      "features": ["F9"],
+      "task_range": "T090-T097",
+      "task_count": 8,
+      "goal": "3D progress ring tracking completion ratio with color interpolation, completion pulse animations, and victory particle cascade + ring shatter sequence"
+    },
+    "phase5_verification": {
+      "name": "Verification",
+      "features": ["cross-cutting"],
+      "task_range": "T120-T124",
+      "task_count": 5,
+      "goal": "Production-ready: 60 FPS audit, rapid interaction stress tests, bundle optimization under 600KB, cross-browser smoke test, keyboard accessibility"
+    }
+  }
+}

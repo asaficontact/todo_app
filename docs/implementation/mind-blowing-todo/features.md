@@ -47,7 +47,7 @@ builds on prior phases.
 - **Depends on:** None
 - **Blocks:** F2 (scene must confirm WebGL support before initializing)
 - **User Stories:** US-21, US-22
-- **Tasks:** TBD
+- **Tasks:** T015, T016
 - **PRD Reference:** Constraint — "WebGL support required in the target browser"
 - **Key Deliverables:**
   - `detectWebGL()` utility runs synchronously before `scene.js` is ever imported
@@ -65,7 +65,7 @@ builds on prior phases.
 - **Depends on:** None
 - **Blocks:** F3, F5, F6, F7, F9
 - **User Stories:** US-01, US-02, US-03, US-04
-- **Tasks:** TBD
+- **Tasks:** T011, T012, T013, T014, T027, T071
 - **PRD Reference:** Core premise — "Build me the most mind-blowing todo app" (task management is the base)
 - **Key Deliverables:**
   - `store.js` — pure JS reactive store with `addTask`, `completeTask`, `deleteTask`, `editTask`
@@ -83,7 +83,7 @@ builds on prior phases.
 - **Depends on:** F10 (WebGL check must pass before scene init)
 - **Blocks:** F3, F4, F6, F7, F8, F9
 - **User Stories:** US-05, US-06
-- **Tasks:** TBD
+- **Tasks:** T010, T017, T018, T019, T020, T021, T022, T023, T024, T025, T026
 - **PRD Reference:** "Go 3D or even something more fancier" — primary visual mandate
 - **Key Deliverables:**
   - Vite 5 project scaffold: `index.html`, `src/main.js`, `src/scene.js`, `package.json`
@@ -105,7 +105,7 @@ builds on prior phases.
 - **Depends on:** F1, F2
 - **Blocks:** F6, F9
 - **User Stories:** US-07, US-08
-- **Tasks:** TBD
+- **Tasks:** T030, T031, T032, T033, T034, T035
 - **PRD Reference:** "most stunning and interactive UI" — animation is the primary spectacle
 - **Key Deliverables:**
   - GSAP timeline for task creation: card flies in from off-screen with scale burst and glow flash
@@ -125,7 +125,7 @@ builds on prior phases.
 - **Depends on:** F2
 - **Blocks:** None
 - **User Stories:** US-09, US-10
-- **Tasks:** TBD
+- **Tasks:** T036, T037, T038, T039, T040
 - **PRD Reference:** "magic of JS" — ambient richness and interactivity
 - **Key Deliverables:**
   - `particles.js` — ambient background particle system using `THREE.InstancedMesh`
@@ -146,7 +146,7 @@ builds on prior phases.
 - **Depends on:** F1
 - **Blocks:** None
 - **User Stories:** US-11, US-12
-- **Tasks:** TBD
+- **Tasks:** T041, T042, T043, T044, T045, T046, T047, T048
 - **PRD Reference:** Constraint — "No backend required — persistence must be client-side only"
 - **Key Deliverables:**
   - `store.js` serializes the task array to `localStorage` under key `'dkmv-todos'` on every mutation
@@ -166,7 +166,7 @@ builds on prior phases.
 - **Depends on:** F1, F2, F3
 - **Blocks:** None
 - **User Stories:** US-13, US-14
-- **Tasks:** TBD
+- **Tasks:** T060, T061, T062, T063
 - **PRD Reference:** Usability requirement — app must function as "an actual usable todo app"
 - **Key Deliverables:**
   - Filter control UI: three buttons — All / Active / Done (DOM overlay or 3D billboard)
@@ -186,7 +186,7 @@ builds on prior phases.
 - **Depends on:** F1, F2
 - **Blocks:** None
 - **User Stories:** US-15, US-16
-- **Tasks:** TBD
+- **Tasks:** T064, T065, T066, T067, T068, T069, T070, T071
 - **PRD Reference:** "magic of JS" — advanced 3D interaction showcase
 - **Key Deliverables:**
   - Three.js `Raycaster` detects hover over task cards; hover triggers glow scale-up feedback
@@ -206,7 +206,7 @@ builds on prior phases.
 - **Depends on:** F2
 - **Blocks:** None
 - **User Stories:** US-17, US-18
-- **Tasks:** TBD
+- **Tasks:** T072, T073, T074, T075, T076
 - **PRD Reference:** "most stunning interactive UI" — visual quality ceiling
 - **Key Deliverables:**
   - `postprocessing` npm package wired into `scene.js` via `EffectComposer`
@@ -227,7 +227,7 @@ builds on prior phases.
 - **Depends on:** F1, F2, F3
 - **Blocks:** None
 - **User Stories:** US-19, US-20
-- **Tasks:** TBD
+- **Tasks:** T090, T091, T092, T093, T094, T095, T096, T097
 - **PRD Reference:** "most mind-blowing and engaging" — motivational UX
 - **Key Deliverables:**
   - 3D progress ring (torus) or energy sphere permanently positioned in the scene (top-center)
