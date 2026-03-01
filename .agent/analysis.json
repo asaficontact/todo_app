@@ -1,0 +1,275 @@
+{
+  "output_dir": "docs/implementation/mind-blowing-todo",
+  "features": [
+    {
+      "id": "F1",
+      "name": "Task CRUD",
+      "description": "Core todo functionality: create tasks with a title/description, mark tasks complete, delete tasks, and edit task details. Every interaction must trigger an immersive 3D visual response."
+    },
+    {
+      "id": "F2",
+      "name": "3D Immersive Scene",
+      "description": "A Three.js WebGL scene that serves as the primary canvas for the UI. Tasks are represented as 3D objects (floating cards, orbs, crystals, etc.) within a dynamic, animated environment (e.g., space, abstract void, neon cityscape)."
+    },
+    {
+      "id": "F3",
+      "name": "Cinematic Animations",
+      "description": "All task state transitions (add, complete, delete) are expressed through dramatic 3D animations — particles explosions on completion, cards flying in on add, dissolve effects on delete — orchestrated via GSAP timelines."
+    },
+    {
+      "id": "F4",
+      "name": "Interactive Particle System",
+      "description": "Ambient particle effects that react to user interactions (mouse proximity, task events). Particles form constellations around tasks or emit on events, adding continuous visual richness."
+    },
+    {
+      "id": "F5",
+      "name": "Task Persistence",
+      "description": "Tasks are stored in localStorage and survive page reloads. The 3D scene reconstructs from persisted state on load with an entrance animation sequence."
+    },
+    {
+      "id": "F6",
+      "name": "Task Filtering & Status Views",
+      "description": "Filter tasks by status (all, pending, done). The 3D scene reorganizes visually when filters change — completed tasks dim/recede, active tasks surge forward — communicating state through spatial layout."
+    },
+    {
+      "id": "F7",
+      "name": "Drag-and-Drop 3D Interaction",
+      "description": "Users can grab and drag task objects in 3D space to reorder or interact with them. Raycasting is used to detect clicks and hovers on 3D task objects."
+    },
+    {
+      "id": "F8",
+      "name": "Post-Processing Visual Effects",
+      "description": "Full-screen shader post-processing effects: bloom (for glowing tasks), chromatic aberration, vignette, and optional motion blur using Three.js EffectComposer."
+    },
+    {
+      "id": "F9",
+      "name": "Progress Visualization",
+      "description": "A visually dramatic progress indicator — e.g., a 3D ring, energy sphere, or constellation that fills/transforms as tasks are completed — giving the user a sense of momentum."
+    },
+    {
+      "id": "F10",
+      "name": "WebGL Fallback",
+      "description": "Graceful degradation message for browsers that do not support WebGL, ensuring the app does not crash silently."
+    }
+  ],
+  "personas": [
+    {
+      "name": "The Impressed User",
+      "description": "Someone who wants a todo app that feels more like an experience than a utility. They want to be wowed every time they open it, and the visual spectacle motivates them to use it."
+    },
+    {
+      "name": "The Developer/Judge",
+      "description": "A technical evaluator assessing the quality and creativity of the implementation. They care about code quality, innovation, and whether the 'magic of JS' was genuinely demonstrated."
+    }
+  ],
+  "constraints": [
+    "Must be implemented in JavaScript (client-side, browser-based)",
+    "Must feature 3D visuals — the PRD explicitly requests 3D or fancier effects",
+    "No backend required — persistence must be client-side only (localStorage / IndexedDB)",
+    "Must deliver on 'mind-blowing' and 'most stunning interactive UI' — aesthetic bar is extremely high",
+    "WebGL support required in the target browser (covers ~97% of modern browsers)",
+    "Must function as an actual usable todo app — visual spectacle cannot come at the cost of basic CRUD functionality",
+    "Node.js 18+ required for the build toolchain (Vite)"
+  ],
+  "risks": [
+    {
+      "risk": "Performance degradation on low-end devices due to heavy WebGL/particle rendering",
+      "mitigation": "Implement adaptive quality settings (reduce particle count, disable post-processing on low FPS detection). Use Three.js instanced meshes for particles."
+    },
+    {
+      "risk": "3D interaction (raycasting, drag-and-drop) feels clunky compared to native DOM interactions",
+      "mitigation": "Hybrid approach: use DOM overlays for input fields while Three.js handles the visual layer. Raycasting for hover/selection only."
+    },
+    {
+      "risk": "Accessibility is severely limited in a pure 3D WebGL interface",
+      "mitigation": "Add DOM-based fallback list view accessible via keyboard, and ARIA labels for interactive elements. Not a primary concern given the PRD's focus on visual impressiveness."
+    },
+    {
+      "risk": "Bundle size bloat from Three.js + GSAP + post-processing",
+      "mitigation": "Use Vite tree-shaking to import only needed Three.js modules. Target <500KB gzipped bundle."
+    },
+    {
+      "risk": "Over-engineering the visual system at the expense of reliable task CRUD",
+      "mitigation": "Implement and test CRUD logic in an isolated store layer (store.js) with no Three.js dependency, before wiring up visuals."
+    },
+    {
+      "risk": "GSAP license: the core GSAP library is free for most uses but some plugins require a Club GreenSock license",
+      "mitigation": "Use only the free GSAP core + ScrollTrigger + free plugins. Avoid MorphSVG or DrawSVG which require a paid license."
+    }
+  ],
+  "non_goals": [
+    "Multi-user collaboration or backend sync",
+    "Mobile native (iOS/Android) app",
+    "Task due dates, reminders, or notifications",
+    "User authentication or accounts",
+    "Drag-and-drop between lists/categories (single list only)",
+    "Offline PWA support (though it would work offline by default due to client-side nature)",
+    "Accessibility compliance beyond basic reasonable effort"
+  ],
+  "architecture_notes": [
+    "Pure client-side SPA: single HTML file entry point, no server-side rendering",
+    "Three.js scene is the primary rendering surface; DOM is used only for input modals and text overlays",
+    "Store layer (store.js) is a pure JS reactive store decoupled from Three.js — it manages task state and notifies subscribers (the 3D scene manager and any DOM components)",
+    "Scene manager (scene.js) owns the Three.js WebGL context, camera, renderer, and EffectComposer post-processing pipeline",
+    "Task objects (task-mesh.js) represent individual tasks as 3D meshes; they subscribe to store events and self-animate using GSAP",
+    "Particle system (particles.js) is a standalone Three.js system using InstancedMesh for performance",
+    "Input layer: floating HTML form (position:fixed overlay) for task text input; Three.js raycasting handles selection/hover",
+    "GSAP orchestrates all timeline animations; Three.js handles geometry/shader-level effects",
+    "localStorage serialization: tasks stored as JSON array under key 'dkmv-todos'",
+    "vite-plugin-glsl enables importing custom GLSL shaders as strings for advanced material effects",
+    "The existing Python scaffolding (src/todo/, main.py) is from a separate CLI PRD (todo_prd.md) and is unrelated to this frontend implementation — the frontend lives in a new directory under docs/implementation/mind-blowing-todo or a dedicated frontend/ directory"
+  ],
+  "adrs_created": [
+    "ADR-0001: Three.js chosen as the 3D rendering library over Babylon.js and CSS 3D",
+    "ADR-0002: Vite chosen as build tool over Parcel, Webpack, and CDN delivery",
+    "ADR-0003: localStorage + plain reactive store chosen over IndexedDB, backend API, or Redux"
+  ],
+  "adrs_reviewed": [],
+  "estimated_complexity": "large",
+  "technology_decisions": [
+    {
+      "area": "3D Rendering",
+      "chosen": "Three.js r170+",
+      "alternatives_considered": ["Babylon.js 7.x", "CSS 3D Transforms + GSAP only"],
+      "rationale": "Three.js is the dominant WebGL abstraction with the largest community, most example code, and best ecosystem fit for a creative 3D todo app. Babylon.js is too heavy for this use case. CSS 3D cannot achieve the 'mind-blowing' visual bar the PRD demands."
+    },
+    {
+      "area": "Animation Orchestration",
+      "chosen": "GSAP 3 (core + free plugins)",
+      "alternatives_considered": ["Anime.js 3.x", "Three.js built-in animation mixer", "CSS animations"],
+      "rationale": "GSAP is the industry standard for high-performance web animation with precise timeline control. It integrates seamlessly with Three.js property animation (position, rotation, scale, material uniforms). Anime.js is a solid alternative but has a smaller plugin ecosystem. Three.js animation mixer is for bone/morph animations, not general timeline orchestration."
+    },
+    {
+      "area": "Build Tool",
+      "chosen": "Vite 5.x",
+      "alternatives_considered": ["Parcel 2", "Webpack 5", "No bundler (CDN imports)"],
+      "rationale": "Vite provides the fastest DX with instant HMR, native ESM, and excellent Three.js + GLSL shader support via vite-plugin-glsl. CDN delivery would prevent tree-shaking, resulting in ~600KB+ Three.js bundle."
+    },
+    {
+      "area": "Post-Processing",
+      "chosen": "Three.js EffectComposer (postprocessing package)",
+      "alternatives_considered": ["Custom shader passes only", "No post-processing"],
+      "rationale": "The `postprocessing` npm package (by vanruesc) provides production-quality bloom, chromatic aberration, SSAO, and more with better performance than Three.js's built-in EffectComposer. Bloom in particular is essential for the glowing neon/sci-fi aesthetic that matches 'mind-blowing' visual goals."
+    },
+    {
+      "area": "Persistence",
+      "chosen": "localStorage",
+      "alternatives_considered": ["IndexedDB", "Backend API (Node/Express)"],
+      "rationale": "Todo data is inherently small; localStorage's 5MB limit is not a concern. Synchronous API keeps the store layer simple. No backend is warranted given the PRD's focus on frontend JavaScript."
+    },
+    {
+      "area": "UI Framework",
+      "chosen": "Vanilla JavaScript (no framework)",
+      "alternatives_considered": ["React + @react-three/fiber", "Svelte + threlte"],
+      "rationale": "Three.js integrates most naturally with vanilla JS since it manages its own render loop. React Three Fiber is excellent but adds framework overhead. The UI surface needing components (modals, overlays) is minimal. Vanilla JS keeps the architecture transparent and showcases raw JS mastery, which aligns with the PRD's 'show me the magic of JS' mandate."
+    },
+    {
+      "area": "3D Visual Theme",
+      "chosen": "Dark space/void with floating crystalline task cards + neon glow",
+      "alternatives_considered": ["Abstract geometric landscape", "Underwater bioluminescent world", "Neon cyberpunk cityscape"],
+      "rationale": "Dark background maximizes bloom/glow contrast and gives tasks maximum visual pop. Crystalline/glass morphism aesthetic is achievable with Three.js MeshPhysicalMaterial (transmission + roughness). Neon glow via bloom post-processing. This combination is visually cohesive and technically impressive."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "question": "Which visual theme should the 3D environment use?",
+      "options": [
+        {
+          "value": "space",
+          "label": "Dark Space / Cosmic",
+          "description": "Tasks float as glowing crystalline cards in a particle-filled void. Stars and nebula-like particle clouds in the background. Bloom-heavy neon glow effects. Maximum dramatic contrast."
+        },
+        {
+          "value": "cyberpunk",
+          "label": "Neon Cyberpunk",
+          "description": "Rain-slicked grid floor, holographic task panels, neon city silhouette backdrop. Strong Matrix/Blade Runner aesthetic."
+        },
+        {
+          "value": "nature",
+          "label": "Bioluminescent Nature",
+          "description": "Organic floating orbs, glowing particles like fireflies, fluid/water shader background. Warmer, more calming aesthetic while still visually impressive."
+        }
+      ],
+      "default": "space"
+    },
+    {
+      "id": "q2",
+      "question": "How should task interaction work in the 3D scene?",
+      "options": [
+        {
+          "value": "click-select",
+          "label": "Click-to-select + Modal Input",
+          "description": "Click a floating task card to select/expand it. A DOM overlay modal handles text input. Simpler, more reliable, better for typing."
+        },
+        {
+          "value": "drag3d",
+          "label": "Full 3D Drag-and-Drop",
+          "description": "Task cards can be grabbed and dragged through 3D space to reorder or toss into a 'done' zone. More impressive but more complex to implement correctly."
+        }
+      ],
+      "default": "click-select"
+    },
+    {
+      "id": "q3",
+      "question": "Should the app use a framework for the UI layer, or pure vanilla JS?",
+      "options": [
+        {
+          "value": "vanilla",
+          "label": "Vanilla JS (Recommended)",
+          "description": "Maximum control, no overhead, aligns with PRD's 'show me the magic of JS'. Slightly more boilerplate for DOM management."
+        },
+        {
+          "value": "react-fiber",
+          "label": "React + @react-three/fiber",
+          "description": "Component-based architecture, great ecosystem, declarative Three.js. Adds ~40KB gzipped but significantly improves code organization for complex scenes."
+        }
+      ],
+      "default": "vanilla"
+    },
+    {
+      "id": "q4",
+      "question": "What level of audio/sound should be included?",
+      "options": [
+        {
+          "value": "none",
+          "label": "No Audio",
+          "description": "Pure visual experience. No Web Audio API integration. Simpler and avoids user-blocking audio autoplay issues."
+        },
+        {
+          "value": "subtle",
+          "label": "Subtle Sound Effects",
+          "description": "Soft chimes on task creation, satisfying whoosh on completion, gentle ambient drone. Uses Web Audio API with user gesture requirement for autoplay compliance."
+        },
+        {
+          "value": "immersive",
+          "label": "Full Immersive Audio",
+          "description": "Dynamic ambient soundtrack + reactive sound effects that respond to scene state. Most impressive but highest implementation complexity."
+        }
+      ],
+      "default": "subtle"
+    },
+    {
+      "id": "q5",
+      "question": "How should the project be structured relative to the existing Python codebase?",
+      "options": [
+        {
+          "value": "separate-frontend",
+          "label": "Separate frontend/ directory (Recommended)",
+          "description": "New Vite project lives in frontend/ at the repo root. Python scaffolding is untouched. Clean separation of concerns."
+        },
+        {
+          "value": "replace",
+          "label": "Replace Python scaffolding entirely",
+          "description": "Remove main.py / src/todo and use the repo root for the Vite app. Cleaner if the Python CLI PRD is superseded."
+        },
+        {
+          "value": "docs-impl",
+          "label": "Inside docs/implementation/ only",
+          "description": "Keep the Vite app self-contained within the implementation output directory. Easiest to review but non-standard project layout."
+        }
+      ],
+      "default": "separate-frontend"
+    }
+  ]
+}
