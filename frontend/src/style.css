@@ -1,0 +1,178 @@
+/* Global reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: monospace;
+  color: #fff;
+}
+
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Add Task button */
+#add-task-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #003355;
+  color: #0ff;
+  border: 1px solid #0ff;
+  padding: 12px 24px;
+  font-family: monospace;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 100;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+#add-task-btn:hover {
+  background: #004466;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+/* Input form overlay */
+.input-form-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.input-form-overlay.visible {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.input-form-card {
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  padding: 32px;
+  width: min(480px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-form-card h2 {
+  color: #0ff;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.input-form-card input,
+.input-form-card textarea {
+  background: rgba(0, 30, 50, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  color: #fff;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  resize: vertical;
+  width: 100%;
+}
+
+.input-form-card input:focus,
+.input-form-card textarea:focus {
+  border-color: rgba(0, 255, 255, 0.6);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+}
+
+.if-error {
+  color: #f55;
+  font-size: 12px;
+  min-height: 16px;
+}
+
+.if-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.if-actions button {
+  padding: 8px 20px;
+  font-family: monospace;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  background: transparent;
+  color: #0ff;
+  transition: background 0.2s;
+}
+
+.if-actions button:hover {
+  background: rgba(0, 255, 255, 0.1);
+}
+
+#if-submit {
+  background: rgba(0, 50, 80, 0.8);
+}
+
+/* WebGL fallback */
+.webgl-fallback {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0ff;
+  font-family: monospace;
+}
+
+.fallback-content {
+  text-align: center;
+  max-width: 480px;
+  padding: 32px;
+}
+
+.fallback-content h1 {
+  font-size: 28px;
+  margin-bottom: 16px;
+  text-shadow: 0 0 20px #0ff;
+}
+
+.fallback-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(0, 255, 255, 0.7);
+  margin-bottom: 8px;
+}
+
+/* Task card labels */
+.task-label {
+  color: #fff;
+  font-family: monospace;
+  font-size: 13px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 0 8px #0ff;
+  pointer-events: none;
+  text-align: center;
+}
+
+.task-label.completed {
+  color: rgba(255, 255, 255, 0.4);
+  text-shadow: none;
+}
