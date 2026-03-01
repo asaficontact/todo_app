@@ -11,6 +11,7 @@ export class Interaction {
   // Drag state
   #pressTimer = null;
   #dragging = false;
+  #wasDragging = false;
   #dragTarget = null;
   #dragPrePos = null;
   #ghostSlotIndex = -1;
@@ -87,8 +88,11 @@ export class Interaction {
   }
 
   _onClick(e) {
-    // Ignore if drag just ended
-    if (this.#dragging) return;
+    // Ignore if drag just ended (click fires after mouseup clears #dragging)
+    if (this.#wasDragging) {
+      this.#wasDragging = false;
+      return;
+    }
 
     this.#mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     this.#mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -212,6 +216,7 @@ export class Interaction {
       return;
     }
 
+    this.#wasDragging = true;
     this.#dragging = false;
 
     // Restore ghost-shifted card
@@ -257,6 +262,7 @@ export class Interaction {
 
   _cancelDrag() {
     if (!this.#dragging) return;
+    this.#wasDragging = true;
     this.#dragging = false;
 
     // Restore ghost shift

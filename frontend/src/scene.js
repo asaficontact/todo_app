@@ -30,7 +30,7 @@ const _fpsHistory = new Float32Array(60).fill(60.0);
 let _fpsIdx = 0;
 let _lowFpsStart = null;
 const LOW_FPS_THRESHOLD = 30;
-const LOW_FPS_DURATION = 3000; // ms
+const LOW_FPS_DURATION = 10000; // ms — require sustained low FPS to avoid disabling during burst animations
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 

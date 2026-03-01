@@ -217,6 +217,12 @@ function _onDeleted(id, task) {
     _repositionAll();
   });
 
+  // Show empty state when the last task is deleted
+  if (meshRegistry.size === 0) {
+    _victoryPlayed = false;
+    showEmptyState();
+  }
+
   // T094: Ring deflation — animate if completed task deleted, snap if not
   if (_progressRing && _store) {
     const newRatio = _store.getCompletionRatio();

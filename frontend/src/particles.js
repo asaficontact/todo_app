@@ -22,6 +22,8 @@ export class ParticleSystem {
     this._mouseWorld = new THREE.Vector3();
     this._mouseActive = false;
     this._camera = null;
+    this._mouseRaycaster = new THREE.Raycaster();
+    this._mousePlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 
     const geo = new THREE.SphereGeometry(0.04, 4, 4);
     const mat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
@@ -64,10 +66,8 @@ export class ParticleSystem {
 
   setMousePosition(ndcX, ndcY) {
     if (!this._camera) return;
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera({ x: ndcX, y: ndcY }, this._camera);
-    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-    raycaster.ray.intersectPlane(plane, this._mouseWorld);
+    this._mouseRaycaster.setFromCamera({ x: ndcX, y: ndcY }, this._camera);
+    this._mouseRaycaster.ray.intersectPlane(this._mousePlane, this._mouseWorld);
     this._mouseActive = true;
   }
 
@@ -144,7 +144,8 @@ export class ParticleSystem {
         if (this._burstState[i] !== 0) continue;
         const dx = this._mouseWorld.x - this._positions[i * 3];
         const dy = this._mouseWorld.y - this._positions[i * 3 + 1];
-        const dist = Math.hypot(dx, dy);
+        const dz = this._mouseWorld.z - this._positions[i * 3 + 2];
+        const dist = Math.hypot(dx, dy, dz);
         if (dist < ATTRACT_RADIUS && dist > 0.1) {
           const force = (ATTRACT_RADIUS - dist) / ATTRACT_RADIUS * ATTRACT_STRENGTH * delta;
           this._velocities[i * 3]     += (dx / dist) * force;
