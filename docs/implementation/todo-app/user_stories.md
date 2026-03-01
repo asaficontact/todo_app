@@ -10,16 +10,16 @@ a power user who runs the app from a shell and expects Unix-conventional behavio
 
 | US ID | Title | Feature | Task(s) | Status |
 |-------|-------|---------|---------|--------|
-| US-01 | Data model and storage layer | F5 | TBD | [ ] |
-| US-02 | Invoke app via `python -m todo` | F6 | TBD | [ ] |
-| US-03 | Add a task from the CLI | F1 | TBD | [ ] |
-| US-04 | List all tasks | F2 | TBD | [ ] |
-| US-05 | Filter tasks by status | F2 | TBD | [ ] |
-| US-06 | Mark a task as done | F3 | TBD | [ ] |
-| US-07 | Delete a task | F4 | TBD | [ ] |
-| US-08 | Tasks persist between sessions | F5 | TBD | [ ] |
-| US-09 | Clear errors for invalid task IDs | F3, F4 | TBD | [ ] |
-| US-10 | Graceful handling of corrupt storage | F5 | TBD | [ ] |
+| US-01 | Data model and storage layer | F5 | T011, T012, T013 | [ ] |
+| US-02 | Invoke app via `python -m todo` | F6 | T014, T015 | [ ] |
+| US-03 | Add a task from the CLI | F1 | T030, T031, T060 | [ ] |
+| US-04 | List all tasks | F2 | T032, T033, T060 | [ ] |
+| US-05 | Filter tasks by status | F2 | T032, T033, T060 | [ ] |
+| US-06 | Mark a task as done | F3 | T034, T035, T060 | [ ] |
+| US-07 | Delete a task | F4 | T036, T037, T060 | [ ] |
+| US-08 | Tasks persist between sessions | F5 | T012, T013, T030, T060 | [ ] |
+| US-09 | Clear errors for invalid task IDs | F3, F4 | T034, T035, T036, T037, T061 | [ ] |
+| US-10 | Graceful handling of corrupt storage | F5 | T012, T013, T061 | [ ] |
 
 ---
 
@@ -51,7 +51,7 @@ testable before any user-visible commands are built.
   produces an identical list.
 - [ ] All functions in `storage.py` carry complete type hints on their signatures.
 
-**Feature:** F5 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F5 | **Tasks:** T011, T012, T013 | **Priority:** Must-have
 
 ---
 
@@ -72,7 +72,7 @@ testable before any user-visible commands are built.
   usage, including the integer `id` argument.
 - [ ] Running `python -m todo` with no subcommand exits non-zero and prints usage.
 
-**Feature:** F6 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F6 | **Tasks:** T014, T015 | **Priority:** Must-have
 
 ---
 
@@ -99,7 +99,7 @@ These are the primary user-facing stories. Each maps to one CLI subcommand.
   task; the file is created if it did not already exist.
 - [ ] Running `add` with no title argument exits non-zero and prints usage to stderr.
 
-**Feature:** F1 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F1 | **Tasks:** T030, T031, T060 | **Priority:** Must-have
 
 ---
 
@@ -119,7 +119,7 @@ These are the primary user-facing stories. Each maps to one CLI subcommand.
 - [ ] Tasks of both statuses (`pending` and `done`) appear in the output when no
   filter is applied.
 
-**Feature:** F2 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F2 | **Tasks:** T032, T033, T060 | **Priority:** Must-have
 
 ---
 
@@ -137,7 +137,7 @@ These are the primary user-facing stories. Each maps to one CLI subcommand.
   with a usage error message.
 - [ ] The `--status` flag is optional; omitting it lists all tasks (covered by US-04).
 
-**Feature:** F2 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F2 | **Tasks:** T032, T033, T060 | **Priority:** Must-have
 
 ---
 
@@ -156,7 +156,7 @@ These are the primary user-facing stories. Each maps to one CLI subcommand.
 - [ ] `todos.json` is updated synchronously; the change is visible in the file
   immediately after the command returns.
 
-**Feature:** F3 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F3 | **Tasks:** T034, T035, T060 | **Priority:** Must-have
 
 ---
 
@@ -174,7 +174,7 @@ These are the primary user-facing stories. Each maps to one CLI subcommand.
 - [ ] `todos.json` is updated synchronously; the removal is visible in the file
   immediately after the command returns.
 
-**Feature:** F4 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F4 | **Tasks:** T036, T037, T060 | **Priority:** Must-have
 
 ---
 
@@ -198,7 +198,7 @@ invalid input, and corrupt data.
 - [ ] The storage file is written synchronously (not buffered or deferred).
 - [ ] `todos.json` is a human-readable JSON list, not binary or encoded.
 
-**Feature:** F5 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F5 | **Tasks:** T012, T013, T030, T060 | **Priority:** Must-have
 
 ---
 
@@ -217,7 +217,7 @@ invalid input, and corrupt data.
   when the ID is not found.
 - [ ] The `todos.json` file is not modified when a not-found error occurs.
 
-**Feature:** F3, F4 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F3, F4 | **Tasks:** T034, T035, T036, T037, T061 | **Priority:** Must-have
 
 ---
 
@@ -237,4 +237,4 @@ invalid input, and corrupt data.
   empty task list (no error).
 - [ ] A missing `todos.json` is treated as an empty task list, not an error.
 
-**Feature:** F5 | **Tasks:** TBD | **Priority:** Must-have
+**Feature:** F5 | **Tasks:** T012, T013, T061 | **Priority:** Must-have

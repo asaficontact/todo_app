@@ -51,7 +51,7 @@ F3 and F4 are independent of F1 at the code level (they share the same data mode
 - **Depends on:** None
 - **Blocks:** F1, F2, F3, F4, F6
 - **User Stories:** US-01, US-08, US-10
-- **Tasks:** TBD
+- **Tasks:** T011, T012, T013 (+ T060, T061 in Phase 3 verification)
 - **PRD Reference:** Section — Storage requirements (todos.json, JSON list, CWD resolution)
 - **Key Deliverables:**
   - `src/todo/models.py` — `Task` dataclass with fields: `id: int`, `title: str`, `description: str`, `status: Literal['pending','done']`, `created_at: str` (ISO 8601)
@@ -69,7 +69,7 @@ F3 and F4 are independent of F1 at the code level (they share the same data mode
 - **Depends on:** F5
 - **Blocks:** F1, F2, F3, F4
 - **User Stories:** US-02
-- **Tasks:** TBD
+- **Tasks:** T010, T014, T015
 - **PRD Reference:** Section — CLI invocation (`python -m todo`), argparse subcommands
 - **Key Deliverables:**
   - `src/todo/__main__.py` — calls `cli.main()` and is the sole entry point for `python -m todo`
@@ -87,7 +87,7 @@ F3 and F4 are independent of F1 at the code level (they share the same data mode
 - **Depends on:** F5, F6
 - **Blocks:** None
 - **User Stories:** US-03
-- **Tasks:** TBD
+- **Tasks:** T030, T031
 - **PRD Reference:** Section — Add command (`python -m todo add <title> [--desc <description>]`)
 - **Key Deliverables:**
   - `add` subcommand accepts `title` (positional, required) and `--desc` (optional string)
@@ -107,7 +107,7 @@ F3 and F4 are independent of F1 at the code level (they share the same data mode
 - **Depends on:** F5, F6
 - **Blocks:** None
 - **User Stories:** US-04, US-05
-- **Tasks:** TBD
+- **Tasks:** T032, T033
 - **PRD Reference:** Section — List command (`python -m todo list [--status pending|done]`)
 - **Key Deliverables:**
   - `list` subcommand accepts optional `--status` flag accepting `pending` or `done`
@@ -127,7 +127,7 @@ F3 and F4 are independent of F1 at the code level (they share the same data mode
 - **Depends on:** F5, F6
 - **Blocks:** None
 - **User Stories:** US-06, US-09
-- **Tasks:** TBD
+- **Tasks:** T034, T035
 - **PRD Reference:** Section — Complete command (`python -m todo complete <id>`)
 - **Key Deliverables:**
   - `complete` subcommand accepts `id` (positional integer, required)
@@ -146,7 +146,7 @@ F3 and F4 are independent of F1 at the code level (they share the same data mode
 - **Depends on:** F5, F6
 - **Blocks:** None
 - **User Stories:** US-07, US-09
-- **Tasks:** TBD
+- **Tasks:** T036, T037
 - **PRD Reference:** Section — Delete command (`python -m todo delete <id>`)
 - **Key Deliverables:**
   - `delete` subcommand accepts `id` (positional integer, required)

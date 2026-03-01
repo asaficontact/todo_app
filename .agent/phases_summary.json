@@ -1,0 +1,10 @@
+{
+  "phase_count": 3,
+  "task_count": 16,
+  "task_id_range": "T010-T061",
+  "phase_filenames": [
+    "phase1_foundation.md",
+    "phase2_core_commands.md",
+    "phase3_verification.md"
+  ]
+}

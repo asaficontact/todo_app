@@ -1,0 +1,5 @@
+Output directory: docs/implementation/todo-app
+Phases: 3
+Total tasks: 16
+Phase documents: phase1_foundation.md, phase2_core_commands.md, phase3_verification.md
+Task ID range: T010-T061
