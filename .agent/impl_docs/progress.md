@@ -2,9 +2,9 @@
 
 ## Current Status
 
-- **Phase:** 1 (completed)
-- **Tasks completed:** 18 / 68
-- **Test coverage:** 39 tests, all passing
+- **Phase:** 2 (completed)
+- **Tasks completed:** 39 / 68
+- **Test coverage:** 47 tests, all passing
 - **Last session:** 2026-03-01
 
 ---
@@ -106,20 +106,35 @@ Each phase follows an **implement → review → fix** cycle:
 
 ---
 
-### Session 3 — {YYYY-MM-DD}
+### Session 3 — 2026-03-01
 
 **Goal:** Implement Phase 2 — Core Visual
-**Completed:** {T-IDs completed}
-**Infrastructure Updates Applied:** IU-2A, IU-2B
-**Blockers:** {Any blockers, or "None"}
+**Completed:** IU-2A, IU-2B, T030, T031, T032, T033, T034, T035, T036, T037, T038, T039, T040, T041, T042, T043, T044, T045, T046, T047, T048, T049
+**Infrastructure Updates Applied:** IU-2A (getMeshForTask already exported), IU-2B (added reposition/tweenToPosition to TaskMesh)
+**Blockers:** None
 **Discoveries:**
-- {Non-obvious finding 1}
+- `getMeshForTask` was already exported from Phase 1 — IU-2A was a no-op
+- Store._load() already had persistence from Phase 1 (T041/T042/T047 were already done); T043 validation was missing and added
+- GSAP's `overwrite: 'auto'` on tweens prevents stacking during rapid add/delete reflow sequences
+- ParticleSystem burst uses O(N) scan of ambient particles closest to worldPos — adequate for 2000 particles
+- CSS2DObject for empty-state label requires import from `three/addons/renderers/CSS2DRenderer.js`
 
 **Changes:**
-- {File-level summary}
+- `frontend/src/anim-constants.js` — new: shared GSAP durations, easings, colors
+- `frontend/src/animations/create-anim.js` — new: fly-in timeline (off-screen → grid position)
+- `frontend/src/animations/complete-anim.js` — new: pulse+dim / uncomplete reverse
+- `frontend/src/animations/delete-anim.js` — new: scale+fade dissolution
+- `frontend/src/animations/edit-anim.js` — new: rotation wobble + emissive flash
+- `frontend/src/particles.js` — new: ParticleSystem (2000 InstancedMesh, Brownian drift, mouse attraction, burst effects)
+- `frontend/src/task-mesh.js` — modified: added reposition(), tweenToPosition()
+- `frontend/src/scene-store.js` — rewritten: animated events, reconstructScene, showEmptyState, setParticles
+- `frontend/src/scene.js` — modified: added playIntroSequence()
+- `frontend/src/store.js` — modified: added schema validation in _load()
+- `frontend/src/store.test.js` — modified: added task validation + filter persistence + 50-task round-trip tests
+- `frontend/src/main.js` — modified: wired particles, intro sequence, reconstruct/empty-state
 
-**Coverage:** {test coverage %}
-**Quality:** {vitest status}
+**Coverage:** 47 tests, 100% passing
+**Quality:** `npm run build` exits 0; `npm run test` exits 0 (47/47 pass)
 **Next:** Phase 2 review pass
 
 ---
