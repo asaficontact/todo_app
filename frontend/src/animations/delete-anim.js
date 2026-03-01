@@ -10,7 +10,7 @@ export function playDeleteAnimation(taskMesh, onComplete) {
     onComplete: () => {
       mesh.parent?.remove(mesh);
       mat.dispose();
-      mesh.geometry.dispose();
+      // geometry is SHARED_GEO — do not dispose it here
       onComplete?.();
     },
   })

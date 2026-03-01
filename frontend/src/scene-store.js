@@ -193,17 +193,29 @@ function _onEdited(task) {
 function _onDeleted(id, task) {
   const tm = meshRegistry.get(id);
   if (!tm) return;
+
+  // T121: Remove from registry BEFORE repositioning so ghost positions are not included
   meshRegistry.delete(id);
+
+  // T121: Kill any in-flight tweens on this mesh/material before starting delete animation
+  // to prevent accessing a disposed material from a stale tween
+  gsap.killTweensOf(tm.mesh.position);
+  gsap.killTweensOf(tm.mesh.scale);
+  gsap.killTweensOf(tm.mesh.rotation);
+  gsap.killTweensOf(tm.material);
 
   if (_particles) {
     _particles.burst(tm.mesh.position.clone(), 'delete', 65);
   }
   _spikeBloom(2.0, 0.15);
 
+  // Reposition remaining cards immediately so they start moving during the delete animation
+  _repositionAll();
+
   playDeleteAnimation(tm, () => {
+    // Final reposition pass after animation completes to settle any in-flight tweens
     _repositionAll();
   });
-  _repositionAll();
 
   // T094: Ring deflation — animate if completed task deleted, snap if not
   if (_progressRing && _store) {

@@ -5,12 +5,17 @@ let _escHandler = null;
 function buildDOM() {
   const overlay = document.createElement('div');
   overlay.className = 'input-form-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-labelledby', 'if-heading');
   overlay.innerHTML = `
     <div class="input-form-card">
       <h2 id="if-heading">New Task</h2>
-      <input id="if-title" type="text" placeholder="Task title..." maxlength="80" />
-      <span class="if-error" id="if-error" hidden></span>
-      <textarea id="if-desc" placeholder="Description (optional)..." rows="3"></textarea>
+      <input id="if-title" type="text" placeholder="Task title..." maxlength="80"
+        aria-label="Task title" aria-required="true" />
+      <span class="if-error" id="if-error" role="alert" hidden></span>
+      <textarea id="if-desc" placeholder="Description (optional)..." rows="3"
+        aria-label="Task description"></textarea>
       <div class="if-actions">
         <button id="if-cancel">Cancel</button>
         <button id="if-submit">Add Task</button>
@@ -89,4 +94,7 @@ export function close() {
     document.removeEventListener('keydown', _escHandler);
     _escHandler = null;
   }
+  // T124: Return focus to add-task button after form closes
+  const addBtn = document.getElementById('add-task-btn');
+  if (addBtn) addBtn.focus();
 }

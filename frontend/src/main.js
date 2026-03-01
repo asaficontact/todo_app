@@ -2,9 +2,16 @@ import { detectWebGL } from './utils/detect-webgl.js';
 import { showFallback } from './ui/fallback.js';
 import { store } from './store.js';
 import * as InputForm from './ui/input-form.js';
+import { initAnnouncer, announce } from './ui/a11y-announcer.js';
 import gsap from 'gsap';
 
 async function bootstrap() {
+  // T124: Initialize screen reader announcer early (before WebGL check)
+  initAnnouncer();
+  store.on('task:added', task => announce('Task added: ' + task.title));
+  store.on('task:completed', task => announce('Task completed: ' + task.title));
+  store.on('task:deleted', () => announce('Task deleted'));
+
   if (!detectWebGL()) {
     showFallback();
     return;

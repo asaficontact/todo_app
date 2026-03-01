@@ -241,18 +241,30 @@ Each phase follows an **implement → review → fix** cycle:
 
 ---
 
-### Session 9 — {YYYY-MM-DD}
+### Session 9 — 2026-03-01
 
 **Goal:** Phase 5 — Verification (performance, cross-browser, accessibility)
-**Completed:** {T-IDs completed}
+**Completed:** T120, T121, T122, T123, T124
 **Infrastructure Updates Applied:** None
-**Blockers:** {Any blockers, or "None"}
+**Blockers:** None
 **Discoveries:**
-- {Non-obvious finding 1}
+- Shared geometry (SHARED_GEO/SHARED_EDGES_GEO) reduces draw calls significantly for 20+ cards
+- delete-anim.js was incorrectly disposing shared geometry — fixed
+- MeshPhysicalMaterial thickness 1.5 causes rendering issues in Safari; reduced to 0.5
+- Bundle splits cleanly: three (122KB gzip), gsap (27KB), postprocessing (14KB), app (4KB)
+- Total gzip ~181KB, well under 600KB target
 
 **Changes:**
-- {File-level summary}
+- frontend/src/task-mesh.js — T120: shared SHARED_GEO + SHARED_EDGES_GEO; thickness 1.5→0.5 (Safari); dispose() skips shared geo
+- frontend/src/animations/delete-anim.js — T120/T121: removed mesh.geometry.dispose() (shared geo)
+- frontend/src/scene-store.js — T121: gsap.killTweensOf() before delete animation; fixed redundant reposition ordering
+- frontend/vite.config.js — T122: manual chunk splitting for three/gsap/postprocessing
+- frontend/src/ui/a11y-announcer.js — T124: new file, initAnnouncer() + announce() for live region
+- frontend/src/ui/input-form.js — T124: ARIA labels on inputs, role=dialog, aria-modal, focus return to add-btn on close
+- frontend/src/ui/filter-controls.js — T124: aria-pressed on filter buttons, role=group
+- frontend/src/style.css — T124: .sr-only utility class
+- frontend/src/main.js — T124: initAnnouncer() + store event hooks for task:added/completed/deleted announcements
 
-**Coverage:** {test coverage %}
-**Quality:** {vitest + lighthouse status}
-**Next:** Final review or ship
+**Coverage:** 67 tests (53 store + 14 progress-ring), 100% passing
+**Quality:** npm run build exits 0 (no warnings, chunks split); npm run test exits 0 (67/67 pass)
+**Next:** Phase complete — production ready

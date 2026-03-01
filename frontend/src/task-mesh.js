@@ -2,6 +2,10 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import gsap from 'gsap';
 
+// T120: Shared geometry instances — reused across all task cards to reduce draw calls
+const SHARED_GEO = new RoundedBoxGeometry(2.8, 1.6, 0.2, 4, 0.1);
+const SHARED_EDGES_GEO = new THREE.EdgesGeometry(SHARED_GEO);
+
 export class TaskMesh {
   constructor(task) {
     this.task = task;
@@ -9,13 +13,11 @@ export class TaskMesh {
   }
 
   _buildMesh() {
-    const geo = new RoundedBoxGeometry(2.8, 1.6, 0.2, 4, 0.1);
-
     this.material = new THREE.MeshPhysicalMaterial({
       transmission: 0.85,
       roughness: 0.05,
       metalness: 0,
-      thickness: 1.5,
+      thickness: 0.5,  // reduced from 1.5 for Safari WebGL compatibility
       iridescence: 0.4,
       iridescenceIOR: 1.5,
       color: new THREE.Color(0x88ccff),
@@ -23,18 +25,17 @@ export class TaskMesh {
       emissiveIntensity: 0.3,
     });
 
-    this.mesh = new THREE.Mesh(geo, this.material);
+    this.mesh = new THREE.Mesh(SHARED_GEO, this.material);
     this.mesh.userData.taskId = this.task.id;
     this.mesh.userData.taskMesh = this;
 
-    // Cyan wireframe overlay
-    const edges = new THREE.EdgesGeometry(geo);
+    // Cyan wireframe overlay — shared edges geometry
     const lineMat = new THREE.LineBasicMaterial({
       color: 0x00ffff,
       transparent: true,
       opacity: 0.3,
     });
-    this.mesh.add(new THREE.LineSegments(edges, lineMat));
+    this.mesh.add(new THREE.LineSegments(SHARED_EDGES_GEO, lineMat));
 
     // Apply completed state if task is already completed (e.g., loaded from storage)
     if (this.task.completed) {
@@ -82,10 +83,11 @@ export class TaskMesh {
   }
 
   dispose() {
-    this.mesh.geometry.dispose();
+    // Note: geometry (SHARED_GEO / SHARED_EDGES_GEO) is shared — do NOT dispose it here.
+    // Only the per-mesh material and edge line material are owned by this instance.
     this.material.dispose();
     this.mesh.children.forEach(child => {
-      child.geometry?.dispose();
+      // child.geometry is shared SHARED_EDGES_GEO — skip disposal
       child.material?.dispose();
     });
   }
