@@ -10,11 +10,11 @@
 
 ## Progress Summary
 
-- **Total tasks:** 68
+- **Total tasks:** 69
 - **Completed:** 0
 - **In progress:** 0
 - **Blocked:** 0
-- **Remaining:** 68
+- **Remaining:** 69
 
 ---
 
@@ -25,8 +25,8 @@
 ### Task 1.1: Project Setup (infrastructure)
 
 - [ ] T010 Vite 5 project scaffold with npm dependencies (depends: nothing)
-- [ ] T011 [P] TypeScript config and dev/build scripts (depends: T010)
-- [ ] T012 [P] Git ignore and workspace structure (depends: T010)
+- [ ] T011 [P] EventEmitter utility class (depends: T010)
+- [ ] T012 [P] Task data model and createTask() factory (depends: T010)
 
 ### Task 1.2: Task CRUD Store (F1)
 
@@ -73,7 +73,6 @@
 
 ### Task 2.2: Card Reflow & Grid (F2)
 
-- [ ] T033 Enhanced task card creation — particle burst on spawn + scale-in (depends: T027, T039)
 - [ ] T035 Card reflow animation on add/delete — GSAP tween all cards to new positions (depends: T027, T025)
 - [ ] T036 [P] Grid layout cache and incremental update strategy (depends: T035)
 - [ ] T037 [P] GSAP timeline coordination for sequential reflow animations (depends: T035)
@@ -84,12 +83,14 @@
 - [ ] T038 Completed task visual state — dim particles around completed card (depends: T032)
 - [ ] T039 Particle burst effect on task events (add/complete/delete) (depends: T034)
 - [ ] T040 Staggered particle spawns during burst (depends: T039)
+- [ ] T033 Enhanced task card creation — particle burst on spawn + scale-in (depends: T027, T039)
 
 ### Task 2.4: Persistence & Filtering Stub (F5, F6)
 
 - [ ] T043 Idle mode detection — auto-disable animations after 30s inactivity (depends: T026)
 - [ ] T044 Interactive mode toggle — re-enable animations on input (depends: T043)
 - [ ] T047 Store filter state stubs — `setFilter()`, `getFilter()` (depends: T018)
+- [ ] T048 [P] localStorage error handling — corrupt data fallback and unavailable storage guard (depends: T020)
 
 ### Task 2.5: Phase Verification (infrastructure)
 

@@ -29,7 +29,7 @@
 | US-19 | Dramatic Progress Indicator | F9 | T090, T091, T092 | [ ] |
 | US-20 | Progress Animates on Completion | F9 | T093, T094, T095, T096, T097 | [ ] |
 | US-21 | Clear WebGL Unsupported Message | F10 | T016, T124 | [ ] |
-| US-22 | Crash-Free WebGL Absence | F10 | T015, T026 | [ ] |
+| US-22 | Crash-Free WebGL Absence | F10 | T015, T016 | [ ] |
 
 ---
 
@@ -66,7 +66,7 @@
 - [ ] If WebGL is unavailable, `scene.js` initialization MUST be aborted and fallback shown
 - [ ] `store.js` and the task CRUD layer MUST still initialize (they have no WebGL dependency)
 
-**Feature:** F10 | **Tasks:** T015, T026 | **Priority:** Must-have
+**Feature:** F10 | **Tasks:** T015, T016 | **Priority:** Must-have
 
 ---
 

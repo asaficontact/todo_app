@@ -47,7 +47,7 @@ builds on prior phases.
 - **Depends on:** None
 - **Blocks:** F2 (scene must confirm WebGL support before initializing)
 - **User Stories:** US-21, US-22
-- **Tasks:** T015, T016
+- **Tasks:** T015, T016, T124
 - **PRD Reference:** Constraint — "WebGL support required in the target browser"
 - **Key Deliverables:**
   - `detectWebGL()` utility runs synchronously before `scene.js` is ever imported
@@ -105,7 +105,7 @@ builds on prior phases.
 - **Depends on:** F1, F2
 - **Blocks:** F6, F9
 - **User Stories:** US-07, US-08
-- **Tasks:** T030, T031, T032, T033, T034, T035
+- **Tasks:** T028, T029, T030, T031, T032, T033, T035
 - **PRD Reference:** "most stunning and interactive UI" — animation is the primary spectacle
 - **Key Deliverables:**
   - GSAP timeline for task creation: card flies in from off-screen with scale burst and glow flash
@@ -125,7 +125,7 @@ builds on prior phases.
 - **Depends on:** F2
 - **Blocks:** None
 - **User Stories:** US-09, US-10
-- **Tasks:** T036, T037, T038, T039, T040
+- **Tasks:** T034, T036, T037, T038, T039, T040
 - **PRD Reference:** "magic of JS" — ambient richness and interactivity
 - **Key Deliverables:**
   - `particles.js` — ambient background particle system using `THREE.InstancedMesh`
