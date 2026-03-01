@@ -154,20 +154,35 @@ Each phase follows an **implement → review → fix** cycle:
 
 ---
 
-### Session 5 — {YYYY-MM-DD}
+### Session 5 — 2026-03-01
 
 **Goal:** Implement Phase 3 — Enhancement
-**Completed:** {T-IDs completed}
-**Infrastructure Updates Applied:** IU-3A, IU-3B
-**Blockers:** {Any blockers, or "None"}
+**Completed:** IU-3A, IU-3B, T060, T061, T062, T063, T064, T065, T066, T067, T068, T069, T070, T071, T072, T073, T074, T075, T076
+**Infrastructure Updates Applied:** IU-3A (getTaskWorldPosition in scene-store.js), IU-3B (setBloomIntensity in scene.js)
+**Blockers:** None
 **Discoveries:**
-- {Non-obvious finding 1}
+- `getFilteredTasks()` was already fully implemented in Phase 2 (T047); tests existed too — only reorderTask needed to be added
+- Dynamic `import * as ActionPanel` must use regular module result (not namespace syntax) inside `Promise.all` destructuring; solved by assigning the whole module to `ActionPanel`
+- `ENABLE_POST_PROCESSING` must be `let` (not `const`) in scene.js so the FPS monitor can mutate it at runtime; ES module live bindings propagate the mutation to importers
+- Float32Array for FPS history initializes to 0; pre-filling with 60.0 avoids false auto-disable triggers during startup
+- scene-store.js can safely import from scene.js (no circular dependency) — scene.js never imports from scene-store.js
+- `_onAdded` calls `_spikeBloom` only when a new task is added via user interaction (not during `reconstructScene` which bypasses the store event)
+- Ghost-shift during drag uses `getGridPositions` snapshot; restoring on drag-end uses a fresh positions array to handle any reorder since drag started
 
 **Changes:**
-- {File-level summary}
+- `frontend/src/store.js` — added `reorderTask(id, newIndex)` method emitting `tasks:reordered`
+- `frontend/src/store.test.js` — added 6 reorderTask tests (total 53 tests)
+- `frontend/src/task-mesh.js` — added `tweenToFilterPosition(pos, isVisible)` with GSAP power3.out
+- `frontend/src/scene-store.js` — added: THREE import, getTaskWorldPosition (IU-3A), getAllMeshes, applyFilter (T062/T063), reorderTask helper (T070), filter:changed listener, _spikeBloom (T074), imported scene.js bloom exports
+- `frontend/src/scene.js` — added: postprocessing imports, ENABLE_POST_PROCESSING (let), BLOOM_STRENGTH constant, EffectComposer+RenderPass+BloomEffect+ChromaticAberration+Vignette (T072/T073/T075), setBloomIntensity (IU-3B), render() export, FPS monitor with auto-disable (T076), resize composer in _onResize
+- `frontend/src/ui/filter-controls.js` — new: 3-button filter UI wired to store (T061)
+- `frontend/src/ui/action-panel.js` — new: contextual Complete/Edit/Delete panel with 2s confirmation for delete (T066)
+- `frontend/src/interaction.js` — new: Interaction class with raycaster hover (T064), hover visual feedback (T065), click-to-select (T067), press-and-hold drag (T068), 3D drag plane projection (T069), snap-to-grid spring (T070), ghost-shift preview (T069), escape cancel (T068)
+- `frontend/src/style.css` — added .filter-controls and .action-panel styles (T061/T066)
+- `frontend/src/main.js` — wired interaction system, filter controls, action panel, updated render loop to use scene.js render() (T072)
 
-**Coverage:** {test coverage %}
-**Quality:** {vitest status}
+**Coverage:** 53 tests, 100% passing
+**Quality:** `npm run build` exits 0; `npm run test` exits 0 (53/53 pass)
 **Next:** Phase 3 review pass
 
 ---

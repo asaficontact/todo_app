@@ -95,6 +95,17 @@ export class Store extends EventEmitter {
 
   getFilter() { return this.#filter; }
 
+  reorderTask(id, newIndex) {
+    const oldIndex = this.#tasks.findIndex(t => t.id === id);
+    if (oldIndex === -1 || oldIndex === newIndex) return;
+    const [task] = this.#tasks.splice(oldIndex, 1);
+    const clampedIndex = Math.max(0, Math.min(newIndex, this.#tasks.length));
+    this.#tasks.splice(clampedIndex, 0, task);
+    this.#tasks.forEach((t, i) => { t.order = i; });
+    this.emit('tasks:reordered', this.#tasks);
+    this._persist();
+  }
+
   // ── Persistence ───────────────────────────────────────────────────────────
 
   _persist() {

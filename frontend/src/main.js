@@ -2,6 +2,7 @@ import { detectWebGL } from './utils/detect-webgl.js';
 import { showFallback } from './ui/fallback.js';
 import { store } from './store.js';
 import * as InputForm from './ui/input-form.js';
+import gsap from 'gsap';
 
 async function bootstrap() {
   if (!detectWebGL()) {
@@ -14,17 +15,24 @@ async function bootstrap() {
     sceneModule,
     { initCSS2DRenderer },
     { createStarfield, createLights, updateStarfield },
-    { initSceneStore, reconstructScene, showEmptyState, setParticles },
+    sceneStoreModule,
     { ParticleSystem },
+    { initFilterControls },
+    ActionPanel,
+    { Interaction },
   ] = await Promise.all([
     import('./scene.js'),
     import('./ui/labels.js'),
     import('./scene/environment.js'),
     import('./scene-store.js'),
     import('./particles.js'),
+    import('./ui/filter-controls.js'),
+    import('./ui/action-panel.js'),
+    import('./interaction.js'),
   ]);
 
-  const { init, startLoop, scene: threeScene, camera, renderer, notifyInteraction, playIntroSequence } = sceneModule;
+  const { initSceneStore, reconstructScene, showEmptyState, setParticles, getAllMeshes, getMeshForTask, reorderTask } = sceneStoreModule;
+  const { init, startLoop, scene: threeScene, camera, renderer, notifyInteraction, playIntroSequence, render } = sceneModule;
 
   const container = document.getElementById('app');
   init(container);
@@ -39,6 +47,9 @@ async function bootstrap() {
   particles.setCamera(camera);
   setParticles(particles);
 
+  // Filter controls (T061)
+  initFilterControls(store);
+
   // Intro camera sequence
   playIntroSequence();
 
@@ -48,6 +59,35 @@ async function bootstrap() {
   } else {
     showEmptyState();
   }
+
+  // ── Interaction system (T064–T070) ───────────────────────────────────────
+
+  new Interaction({
+    camera,
+    renderer,
+    getMeshes: getAllMeshes,
+    store,
+    reorderTask,
+    getTaskMesh: getMeshForTask,
+    onHoverEnter(tm) {
+      const maxIntensity = tm.task.completed ? 0.4 : 0.8;
+      gsap.to(tm.mesh.scale, { x: 1.05, y: 1.05, z: 1.05, duration: 0.15, ease: 'power2.out', overwrite: 'auto' });
+      gsap.to(tm.material, { emissiveIntensity: maxIntensity, duration: 0.15, overwrite: 'auto' });
+      renderer.domElement.style.cursor = 'pointer';
+    },
+    onHoverExit(tm) {
+      const baseIntensity = tm.task.completed ? 0.05 : 0.3;
+      gsap.to(tm.mesh.scale, { x: 1.0, y: 1.0, z: 1.0, duration: 0.2, ease: 'power2.out', overwrite: 'auto' });
+      gsap.to(tm.material, { emissiveIntensity: baseIntensity, duration: 0.2, overwrite: 'auto' });
+      renderer.domElement.style.cursor = 'default';
+    },
+    onSelect(tm, screenPos) {
+      ActionPanel.show(tm.task, screenPos.x, screenPos.y, { store, InputForm });
+    },
+    onDeselect() {
+      ActionPanel.hide();
+    },
+  });
 
   // ── UI event wiring ──────────────────────────────────────────────────────
 
@@ -88,7 +128,7 @@ async function bootstrap() {
   startLoop(delta => {
     particles.update(delta);
     updateStarfield(starfield, delta);
-    renderer.render(threeScene, camera);
+    render(delta);
     labelRenderer.render(threeScene, camera);
   });
 }

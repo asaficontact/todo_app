@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import gsap from 'gsap';
+import {
+  EffectComposer,
+  RenderPass,
+  EffectPass,
+  BloomEffect,
+  ChromaticAberrationEffect,
+  VignetteEffect,
+} from 'postprocessing';
 
 export let renderer, camera, scene;
 
@@ -9,6 +17,22 @@ let _running = false;
 let _stats = null;
 let _lastInteraction = 0;
 const IDLE_THRESHOLD = 3000; // ms
+
+// ── Post-processing ──────────────────────────────────────────────────────────
+export let ENABLE_POST_PROCESSING = true;
+export const BLOOM_STRENGTH = 1.2;
+
+let _composer = null;
+let _bloomEffect = null;
+
+// FPS monitor state (T076)
+const _fpsHistory = new Float32Array(60).fill(60.0);
+let _fpsIdx = 0;
+let _lowFpsStart = null;
+const LOW_FPS_THRESHOLD = 30;
+const LOW_FPS_DURATION = 3000; // ms
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 export function init(container) {
   scene = new THREE.Scene();
@@ -34,11 +58,65 @@ function _onResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  if (_composer) _composer.setSize(window.innerWidth, window.innerHeight);
 }
+
+// ── Post-processing setup (T072 / T073 / T075) ────────────────────────────────
+
+function _initComposer() {
+  _composer = new EffectComposer(renderer);
+  _composer.addPass(new RenderPass(scene, camera));
+
+  // BloomEffect (T073)
+  _bloomEffect = new BloomEffect({
+    intensity: BLOOM_STRENGTH,
+    luminanceThreshold: 0.2,
+    luminanceSmoothing: 0.025,
+    mipmapBlur: true,
+  });
+
+  // ChromaticAberrationEffect (T075)
+  const chromatic = new ChromaticAberrationEffect({
+    offset: new THREE.Vector2(0.002, 0.002),
+    radialModulation: true,
+    modulationOffset: 0.003,
+  });
+
+  // VignetteEffect (T075)
+  const vignette = new VignetteEffect({
+    darkness: 0.5,
+    offset: 0.3,
+  });
+
+  // Combine all effects in one EffectPass for performance (T075)
+  const combinedPass = new EffectPass(camera, _bloomEffect, chromatic, vignette);
+  _composer.addPass(combinedPass);
+}
+
+// IU-3B: Bloom intensity setter
+export function setBloomIntensity(value) {
+  if (_bloomEffect) _bloomEffect.intensity = value;
+}
+
+// ── Render (T072) ─────────────────────────────────────────────────────────────
+
+export function render(delta) {
+  if (ENABLE_POST_PROCESSING && _composer) {
+    _composer.render(delta);
+  } else {
+    renderer.render(scene, camera);
+  }
+}
+
+// ── Loop ──────────────────────────────────────────────────────────────────────
 
 export function startLoop(onFrame) {
   if (_running) return;
   _running = true;
+
+  if (ENABLE_POST_PROCESSING) {
+    _initComposer();
+  }
 
   if (import.meta.env.DEV) {
     _stats = new Stats();
@@ -48,6 +126,25 @@ export function startLoop(onFrame) {
 
   function tick() {
     const delta = Math.min(_clock.getDelta(), 0.1);
+
+    // FPS monitor (T076)
+    if (ENABLE_POST_PROCESSING) {
+      const fps = delta > 0 ? 1 / delta : 60;
+      _fpsHistory[_fpsIdx % 60] = fps;
+      _fpsIdx++;
+      const avgFps = _fpsHistory.reduce((a, b) => a + b, 0) / 60;
+
+      if (avgFps < LOW_FPS_THRESHOLD) {
+        if (!_lowFpsStart) _lowFpsStart = Date.now();
+        else if (Date.now() - _lowFpsStart > LOW_FPS_DURATION) {
+          console.warn('[DKMV] Post-processing disabled due to low FPS');
+          ENABLE_POST_PROCESSING = false;
+        }
+      } else {
+        _lowFpsStart = null;
+      }
+    }
+
     updateCameraDrift(_clock.getElapsedTime());
     onFrame(delta);
     _stats?.update();

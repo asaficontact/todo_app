@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import gsap from 'gsap';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { TaskMesh } from './task-mesh.js';
@@ -7,6 +8,7 @@ import { playCreateAnimation } from './animations/create-anim.js';
 import { playCompleteAnimation } from './animations/complete-anim.js';
 import { playDeleteAnimation } from './animations/delete-anim.js';
 import { playEditAnimation } from './animations/edit-anim.js';
+import { setBloomIntensity, BLOOM_STRENGTH, ENABLE_POST_PROCESSING } from './scene.js';
 
 /** @type {Map<string, TaskMesh>} */
 const meshRegistry = new Map();
@@ -25,14 +27,63 @@ export function initSceneStore(threeScene, store, _labelRenderer) {
   store.on('task:uncompleted', task => _onCompletedChange(task, false));
   store.on('task:edited', task => _onEdited(task));
   store.on('task:deleted', ({ id, task }) => _onDeleted(id, task));
+  store.on('filter:changed', filter => applyFilter(filter));
 }
 
 export function getMeshForTask(id) {
   return meshRegistry.get(id) || null;
 }
 
+export function getAllMeshes() {
+  return Array.from(meshRegistry.values()).map(tm => tm.mesh);
+}
+
+// IU-3A: World position helper
+export function getTaskWorldPosition(id) {
+  const tm = meshRegistry.get(id);
+  if (!tm) return null;
+  const wp = new THREE.Vector3();
+  tm.mesh.getWorldPosition(wp);
+  return wp;
+}
+
 export function setParticles(particles) {
   _particles = particles;
+}
+
+// ── Filter integration (T062 / T063) ─────────────────────────────────────────
+
+export function applyFilter(filter) {
+  if (!_store) return;
+  const filtered = _store.getFilteredTasks();
+  const filteredIds = new Set(filtered.map(t => t.id));
+
+  // Recalculate grid for visible cards only (using their order from full task list)
+  const allTasks = _store.getTasks();
+  const visibleTasks = allTasks.filter(t => filteredIds.has(t.id));
+  const positions = getGridPositions(visibleTasks.length);
+
+  visibleTasks.forEach((task, i) => {
+    const tm = meshRegistry.get(task.id);
+    if (tm) tm.tweenToFilterPosition(positions[i], true);
+  });
+
+  // Push non-visible cards back
+  allTasks.filter(t => !filteredIds.has(t.id)).forEach(task => {
+    const tm = meshRegistry.get(task.id);
+    if (tm) tm.tweenToFilterPosition(
+      { x: tm.mesh.position.x, y: tm.mesh.position.y, z: -6 },
+      false
+    );
+  });
+}
+
+// ── Reorder helper (T070) ────────────────────────────────────────────────────
+
+export function reorderTask(id, newIndex) {
+  if (!_store) return;
+  _store.reorderTask(id, newIndex);
+  _repositionAll(id);
 }
 
 // ── Empty state ────────────────────────────────────────────────────────────────
@@ -73,7 +124,8 @@ export function reconstructScene(store) {
 function _onAdded(task) {
   _dismissEmptyState();
   _spawnMeshWithAnimation(task);
-  _repositionAll(task.id); // reflow existing cards (skip the new one — it animates separately)
+  _repositionAll(task.id);
+  _spikeBloom(3.0, 0.2);
 }
 
 function _onCompletedChange(task, isCompleting) {
@@ -85,6 +137,7 @@ function _onCompletedChange(task, isCompleting) {
   }
   if (isCompleting && _particles) {
     _particles.burst(tm.mesh.position, 'complete', 70);
+    _spikeBloom(4.0, 0.3);
   }
 }
 
@@ -103,13 +156,33 @@ function _onDeleted(id, _task) {
   if (_particles) {
     _particles.burst(tm.mesh.position.clone(), 'delete', 65);
   }
+  _spikeBloom(2.0, 0.15);
 
   playDeleteAnimation(tm, () => {
-    // Secondary reflow after dissolution (in case cards moved during animation)
     _repositionAll();
   });
-  // Start reflow immediately so remaining cards begin sliding
   _repositionAll();
+}
+
+// ── Bloom spike helper (T074) ────────────────────────────────────────────────
+
+function _spikeBloom(multiplier, decayDuration) {
+  if (!ENABLE_POST_PROCESSING) return;
+  const obj = { v: BLOOM_STRENGTH };
+  gsap.to(obj, {
+    v: BLOOM_STRENGTH * multiplier,
+    duration: 0.05,
+    ease: 'power1.in',
+    onUpdate() { setBloomIntensity(obj.v); },
+    onComplete() {
+      gsap.to(obj, {
+        v: BLOOM_STRENGTH,
+        duration: decayDuration,
+        ease: 'power3.out',
+        onUpdate() { setBloomIntensity(obj.v); },
+      });
+    },
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

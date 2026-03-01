@@ -66,6 +66,21 @@ export class TaskMesh {
     });
   }
 
+  tweenToFilterPosition({ x, y, z }, isVisible) {
+    gsap.to(this.mesh.position, {
+      x, y, z,
+      duration: isVisible ? 0.5 : 0.6,
+      ease: 'power3.out',
+      overwrite: 'auto',
+    });
+    gsap.to(this.material, {
+      emissiveIntensity: isVisible ? 0.3 : 0.02,
+      duration: isVisible ? 0.4 : 0.6,
+      ease: 'power2.out',
+      overwrite: 'auto',
+    });
+  }
+
   dispose() {
     this.mesh.geometry.dispose();
     this.material.dispose();

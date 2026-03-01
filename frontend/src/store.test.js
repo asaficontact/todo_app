@@ -382,6 +382,62 @@ describe('Store', () => {
     });
   });
 
+  // ── reorderTask ────────────────────────────────────────────────────────────
+
+  describe('reorderTask', () => {
+    it('moves a task to the specified index', () => {
+      store.addTask('A');
+      store.addTask('B');
+      const c = store.addTask('C');
+      store.reorderTask(c.id, 0);
+      const tasks = store.getTasks();
+      expect(tasks[0].title).toBe('C');
+      expect(tasks[1].title).toBe('A');
+      expect(tasks[2].title).toBe('B');
+    });
+
+    it('updates order fields after reorder', () => {
+      store.addTask('A');
+      store.addTask('B');
+      const c = store.addTask('C');
+      store.reorderTask(c.id, 1);
+      const tasks = store.getTasks();
+      tasks.forEach((t, i) => expect(t.order).toBe(i));
+    });
+
+    it('emits tasks:reordered event', () => {
+      const spy = vi.fn();
+      store.on('tasks:reordered', spy);
+      store.addTask('A');
+      const b = store.addTask('B');
+      store.reorderTask(b.id, 0);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('persists reorder to localStorage', () => {
+      store.addTask('A');
+      const b = store.addTask('B');
+      store.reorderTask(b.id, 0);
+      const saved = JSON.parse(localStorageMock.getItem('dkmv-todos'));
+      expect(saved[0].title).toBe('B');
+    });
+
+    it('does nothing when id not found', () => {
+      store.addTask('A');
+      expect(() => store.reorderTask('nonexistent', 0)).not.toThrow();
+      expect(store.getTasks()).toHaveLength(1);
+    });
+
+    it('does nothing when oldIndex equals newIndex', () => {
+      const a = store.addTask('A');
+      store.addTask('B');
+      const spy = vi.fn();
+      store.on('tasks:reordered', spy);
+      store.reorderTask(a.id, 0);
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
   // ── EventEmitter delegation ────────────────────────────────────────────────
 
   describe('EventEmitter methods', () => {
