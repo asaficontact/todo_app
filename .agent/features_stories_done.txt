@@ -1,0 +1,4 @@
+Output directory: docs/implementation/todo-app
+Features: 6 features written to docs/implementation/todo-app/features.md
+Stories: 10 stories written to docs/implementation/todo-app/user_stories.md
+Categories: Infrastructure, Core Workflow, Reliability

@@ -1,0 +1,9 @@
+{
+  "feature_count": 6,
+  "story_count": 10,
+  "feature_ids": ["F1", "F2", "F3", "F4", "F5", "F6"],
+  "story_ids": ["US-01", "US-02", "US-03", "US-04", "US-05", "US-06", "US-07", "US-08", "US-09", "US-10"],
+  "categories": ["Infrastructure", "Core Workflow", "Reliability"],
+  "output_dir": "docs/implementation/todo-app",
+  "phases": 2
+}
