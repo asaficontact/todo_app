@@ -1,0 +1,183 @@
+{
+  "output_dir": "docs/implementation/todo-app",
+  "features": [
+    {
+      "id": "F1",
+      "name": "Add Task",
+      "description": "Add a new task with a required title and optional description. Each task receives a unique auto-incrementing integer ID, defaults to 'pending' status, and is immediately persisted to todos.json with an ISO 8601 created_at timestamp."
+    },
+    {
+      "id": "F2",
+      "name": "List Tasks",
+      "description": "List all tasks or filter by status (pending/done). Each task is displayed with its ID, title, status, and creation date. A friendly message is shown when no tasks exist."
+    },
+    {
+      "id": "F3",
+      "name": "Complete Task",
+      "description": "Mark a task as done by its integer ID. Prints a confirmation message on success. Exits with an error message if the task ID does not exist."
+    },
+    {
+      "id": "F4",
+      "name": "Delete Task",
+      "description": "Permanently remove a task by its integer ID. Prints a confirmation message on success. Exits with an error message if the task ID does not exist."
+    },
+    {
+      "id": "F5",
+      "name": "Data Persistence",
+      "description": "All tasks are stored as a JSON list in todos.json in the current working directory. The file is created on first use and updated synchronously after each mutating operation."
+    },
+    {
+      "id": "F6",
+      "name": "Module Entry Point",
+      "description": "The application is runnable via `python -m todo`, requiring a __main__.py entry point in the src/todo/ package that wires together CLI parsing and command dispatch."
+    }
+  ],
+  "personas": [
+    {
+      "name": "Developer / CLI User",
+      "description": "A software developer or power user who prefers terminal-based tools. They run the app from a shell, expect clear output and error messages, and trust that data persists between invocations."
+    }
+  ],
+  "constraints": [
+    "Python >= 3.12 (from pyproject.toml)",
+    "No external runtime dependencies — stdlib only for the application itself",
+    "pytest is the test framework (dev dependency)",
+    "All application code must live in src/todo/ package",
+    "Type hints required on all function signatures",
+    "todos.json is stored in the current working directory (not a fixed path)",
+    "Task IDs are auto-incrementing integers",
+    "Task status is strictly 'pending' or 'done'",
+    "created_at uses ISO 8601 format",
+    "The app must be runnable via `python -m todo`"
+  ],
+  "risks": [
+    {
+      "risk": "Concurrent writes to todos.json corrupt data when two processes run simultaneously",
+      "mitigation": "Acceptable for a single-user CLI tool. Document that concurrent access is not supported."
+    },
+    {
+      "risk": "ID gaps after deletions make the auto-increment logic non-trivial",
+      "mitigation": "Generate new ID as max(existing IDs) + 1, or 1 if no tasks exist. This is safe and simple."
+    },
+    {
+      "risk": "todos.json does not exist on first run",
+      "mitigation": "Treat a missing file as an empty task list; create/overwrite the file on the first write."
+    },
+    {
+      "risk": "todos.json is malformed (manually edited or corrupted)",
+      "mitigation": "Wrap JSON parsing in a try/except and exit with a clear error message prompting the user to delete or fix the file."
+    },
+    {
+      "risk": "Incomplete test coverage leaves edge cases unvalidated before downstream QA",
+      "mitigation": "PRD requires at least 5 unit tests. Plan for tests covering: add, list (all + filtered), complete (success + missing ID), delete (success + missing ID)."
+    }
+  ],
+  "non_goals": [
+    "Web or GUI interface",
+    "Database backend (SQLite, PostgreSQL, etc.)",
+    "Task priorities, tags, or categories",
+    "Due dates or reminders",
+    "Multi-user support or authentication",
+    "Remote sync or cloud storage",
+    "Interactive TUI (curses/textual)",
+    "Export to formats other than JSON"
+  ],
+  "architecture_notes": [
+    "Entry point: src/todo/__main__.py — required for `python -m todo` invocation",
+    "CLI parsing: stdlib argparse with subparsers for add/list/complete/delete commands",
+    "Data layer: pure JSON read/write via stdlib json module; load-on-read, save-on-write pattern",
+    "Recommended module split: __main__.py (entry), cli.py (argparse setup + dispatch), storage.py (JSON I/O), models.py (Task dataclass or TypedDict)",
+    "No src/todo/__init__.py exports required beyond package marker; all logic in submodules",
+    "ID generation: max(task['id'] for task in tasks) + 1, defaulting to 1 for empty list",
+    "Error handling: sys.exit(1) with a message to stderr for invalid IDs and corrupt storage",
+    "Existing project structure (pyproject.toml, src/todo/, tests/) is already scaffolded — do not reorganize"
+  ],
+  "adrs_created": [],
+  "adrs_reviewed": [],
+  "estimated_complexity": "small",
+  "technology_decisions": [
+    {
+      "area": "CLI argument parsing",
+      "chosen": "argparse (stdlib)",
+      "alternatives_considered": ["click", "typer"],
+      "rationale": "The PRD explicitly forbids external runtime dependencies. argparse is stdlib, well-documented, supports subcommands via add_subparsers(), and is sufficient for four simple commands."
+    },
+    {
+      "area": "Data storage format",
+      "chosen": "JSON file (stdlib json module)",
+      "alternatives_considered": ["SQLite (sqlite3 stdlib)", "CSV (csv stdlib)"],
+      "rationale": "The PRD explicitly mandates todos.json as a JSON list. No evaluation needed; this is a hard requirement."
+    },
+    {
+      "area": "Task data model representation",
+      "chosen": "dataclasses.dataclass with asdict() serialization",
+      "alternatives_considered": ["TypedDict", "plain dict"],
+      "rationale": "dataclass provides type safety, IDE support, and clean serialization via dataclasses.asdict(). TypedDict is equally valid but offers no runtime validation. Both are stdlib. Dataclass is slightly cleaner for the 5-field Task model."
+    },
+    {
+      "area": "Testing framework",
+      "chosen": "pytest",
+      "alternatives_considered": ["unittest (stdlib)"],
+      "rationale": "PRD mandates pytest. It offers simpler test syntax, better assertion introspection, and fixture support (useful for isolating todos.json I/O via tmp_path)."
+    },
+    {
+      "area": "Module structure (single vs multi-file)",
+      "chosen": "Multi-file: __main__.py, cli.py, storage.py, models.py",
+      "alternatives_considered": ["Single __main__.py with all logic"],
+      "rationale": "Separating concerns makes each module independently testable (storage.py can be tested without CLI, models.py has no I/O). Downstream tasks (testing, QA) benefit from clear module boundaries. The app is still small enough that four files are not over-engineering."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "question": "How should errors (invalid task ID, corrupt JSON) be reported?",
+      "options": [
+        {
+          "value": "stderr_exit1",
+          "label": "Print to stderr, exit with code 1",
+          "description": "Follows Unix conventions. Error messages go to stderr so they don't interfere with stdout output. Non-zero exit code enables shell scripting (if python -m todo complete 99; then ...). Recommended for CLI tools."
+        },
+        {
+          "value": "stdout_exit1",
+          "label": "Print to stdout, exit with code 1",
+          "description": "Simpler implementation. Error and normal output both go to stdout. Easier to capture in tests but violates Unix convention for error streams."
+        }
+      ],
+      "default": "stderr_exit1"
+    },
+    {
+      "id": "q2",
+      "question": "How should the list command format its output?",
+      "options": [
+        {
+          "value": "plain",
+          "label": "Plain formatted text",
+          "description": "Each task on one line: '[ID] Title (status) - created_at'. Simple, no alignment. Works well for short titles."
+        },
+        {
+          "value": "table",
+          "label": "Aligned columns using str.ljust/rjust",
+          "description": "Right-pad columns for alignment (ID, Title, Status, Created). More readable for many tasks. Slightly more complex formatting logic but still stdlib-only."
+        }
+      ],
+      "default": "table"
+    },
+    {
+      "id": "q3",
+      "question": "Where should the todos.json file path be resolved from?",
+      "options": [
+        {
+          "value": "cwd",
+          "label": "Always current working directory",
+          "description": "todos.json is created wherever the user runs the command. Matches PRD language exactly. Simple but means different invocation directories yield different data files."
+        },
+        {
+          "value": "env_override",
+          "label": "Current working directory with optional env var override",
+          "description": "Defaults to CWD but respects TODO_FILE env var if set. Makes testing easier (point at tmp file) and gives power users flexibility. Small addition with no external dependencies."
+        }
+      ],
+      "default": "env_override"
+    }
+  ]
+}
