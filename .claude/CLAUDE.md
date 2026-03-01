@@ -53,17 +53,15 @@ build on yours.
 
 ## Task-Specific Instructions
 
-## Analysis Rules
-- Read the full PRD at `.agent/prd.md` before doing anything else
+## Feature & Story Extraction Rules
+- Output directory: `docs/implementation/todo-app` — write all deliverables here
+- Create the output directory if it doesn't exist
+- Write `features.md` and `user_stories.md` to the output directory
+- After writing both files, create `.agent/features_stories_done.txt` with a summary
 - Do NOT write any implementation code
-- Do NOT create any implementation documents yet — only produce `.agent/analysis.json`
-- The analysis must be valid JSON
-- If design docs are available at `.agent/design_docs/`, incorporate them into your analysis
-- Handle ADRs conditionally:
-  - If an existing ADR directory is found, review and update existing ADRs as needed
-  - If no ADR directory exists AND this is a new project, create `docs/adrs/` and write ADRs for blocking decisions
-  - If no ADR directory exists AND this is an existing project with code, skip ADR file creation — document inline
-- Only create ADRs for decisions that affect 3+ tasks.
+- Do NOT create phase documents or tasks.md yet
+- Features must be coherent, deliverable units — not too big (>1 phase) or too small (<2-3 tasks)
+- User stories must follow INVEST criteria: Independent, Negotiable, Valuable, Estimable, Small, Testable
 
 
 ---
