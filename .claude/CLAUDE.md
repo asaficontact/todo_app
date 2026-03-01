@@ -53,15 +53,17 @@ build on yours.
 
 ## Task-Specific Instructions
 
-## Feature & Story Extraction Rules
+## Phase & Task Decomposition Rules
 - Output directory: `docs/implementation/todo-app` — write all deliverables here
-- Create the output directory if it doesn't exist
-- Write `features.md` and `user_stories.md` to the output directory
-- After writing both files, create `.agent/features_stories_done.txt` with a summary
+- Read `features.md` and `user_stories.md` from the output directory
+- Write all `phaseN_*.md` files to the output directory
+- Update `features.md` with task ID ranges after decomposition
+- Update `user_stories.md` traceability matrix with task IDs
 - Do NOT write any implementation code
-- Do NOT create phase documents or tasks.md yet
-- Features must be coherent, deliverable units — not too big (>1 phase) or too small (<2-3 tasks)
-- User stories must follow INVEST criteria: Independent, Negotiable, Valuable, Estimable, Small, Testable
+- Do NOT create tasks.md, progress.md, README.md, or CLAUDE.md yet
+- Each phase must end with verifiable functionality
+- No task should exceed 3 hours estimated scope
+- One task = 1-3 files modified
 
 
 ---
