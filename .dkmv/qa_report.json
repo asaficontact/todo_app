@@ -1,0 +1,167 @@
+{
+  "tests_total": 24,
+  "tests_passed": 24,
+  "tests_failed": 0,
+  "requirements": [
+    {
+      "requirement": "Add a task: users can add a new task with a title and optional description",
+      "status": "pass",
+      "notes": "Implemented via 'add' subcommand in __main__.py:55-58 and add_task() in commands.py:7-17. Title is positional, --description is optional with empty string default."
+    },
+    {
+      "requirement": "Each task gets a unique auto-incrementing integer ID",
+      "status": "pass",
+      "notes": "next_id() in storage.py:27-31 returns max(existing_ids) + 1, or 1 for empty list. Tested in test_add_task_auto_increment_id and test_next_id_with_tasks."
+    },
+    {
+      "requirement": "New tasks default to 'pending' status",
+      "status": "pass",
+      "notes": "Task.create() in models.py:20-28 hardcodes status='pending'."
+    },
+    {
+      "requirement": "Tasks are immediately persisted to todos.json",
+      "status": "pass",
+      "notes": "save_tasks() is called immediately after task creation in add_task() (commands.py:16). Verified manually and via test_add_task_persists."
+    },
+    {
+      "requirement": "List tasks: default shows all tasks in a readable format",
+      "status": "pass",
+      "notes": "cmd_list() in __main__.py:20-26 prints all tasks via _format_task(). Format includes ID, title, description (if any), status, and created_at."
+    },
+    {
+      "requirement": "List tasks: support --status pending and --status done filters",
+      "status": "pass",
+      "notes": "argparse in __main__.py:62-67 exposes --status with choices=['pending','done']. list_tasks() in commands.py:20-28 filters by status_filter."
+    },
+    {
+      "requirement": "List tasks: show task ID, title, status, and creation date",
+      "status": "pass",
+      "notes": "_format_task() in __main__.py:10-12 outputs all four fields. Description shown only when non-empty."
+    },
+    {
+      "requirement": "List tasks: show a message when no tasks exist",
+      "status": "pass",
+      "notes": "cmd_list() in __main__.py:22-24 prints 'No tasks found.' when tasks list is empty. Also applies when filter returns no results."
+    },
+    {
+      "requirement": "Complete a task: accept task ID as argument, print confirmation, error gracefully if ID not found",
+      "status": "pass",
+      "notes": "cmd_complete() in __main__.py:29-35. complete_task() raises ValueError for missing IDs; caught and printed to stderr with sys.exit(1). Confirmed: exit code 1 on invalid ID."
+    },
+    {
+      "requirement": "Delete a task: accept task ID as argument, print confirmation, error gracefully if ID not found",
+      "status": "pass",
+      "notes": "cmd_delete() in __main__.py:38-44. delete_task() raises ValueError for missing IDs; caught and printed to stderr with sys.exit(1). Confirmed: exit code 1 on invalid ID."
+    },
+    {
+      "requirement": "Tasks stored as JSON in todos.json in the current directory",
+      "status": "pass",
+      "notes": "DEFAULT_PATH = 'todos.json' in storage.py:9. File is written in the working directory. Verified: correct JSON list structure observed in manual test."
+    },
+    {
+      "requirement": "Data model: id (int), title (str), description (str), status ('pending'|'done'), created_at (ISO 8601)",
+      "status": "pass",
+      "notes": "Task dataclass in models.py:11-17 matches spec exactly. created_at uses datetime.now(timezone.utc).isoformat() (UTC-aware ISO 8601). to_dict() and from_dict() preserve all fields."
+    },
+    {
+      "requirement": "JSON file contains a list of task objects",
+      "status": "pass",
+      "notes": "save_tasks() in storage.py:21-24 writes json.dump([t.to_dict() for t in tasks], ...) — always a top-level list."
+    },
+    {
+      "requirement": "App is runnable via python -m todo",
+      "status": "pass",
+      "notes": "src/todo/__main__.py exists with main() entry point. Verified: all commands work when invoked as PYTHONPATH=src python3 -m todo."
+    },
+    {
+      "requirement": "Commands: add, list, complete, delete",
+      "status": "pass",
+      "notes": "All four subcommands defined via argparse in build_parser() (__main__.py:47-80)."
+    },
+    {
+      "requirement": "All code in src/todo/ package",
+      "status": "pass",
+      "notes": "All application code resides in src/todo/ (__main__.py, models.py, storage.py, commands.py) with __init__.py present."
+    },
+    {
+      "requirement": "Type hints on all functions",
+      "status": "partial",
+      "notes": "_format_task() in __main__.py:10 is missing a type hint on the 'task' parameter (def _format_task(task) -> str). All other functions in models.py, storage.py, commands.py, and __main__.py have full type hints."
+    },
+    {
+      "requirement": "No external dependencies (stdlib only for the app itself)",
+      "status": "pass",
+      "notes": "pyproject.toml dependencies = []. App uses only argparse, json, os, datetime, dataclasses, typing — all stdlib."
+    },
+    {
+      "requirement": "pytest for testing",
+      "status": "pass",
+      "notes": "pytest >= 8 listed in [dependency-groups] dev. All 24 tests use pytest idioms (fixtures, raises, assertions)."
+    }
+  ],
+  "eval_criteria": [
+    {
+      "criterion": "All four commands work correctly: add, list, complete, delete",
+      "status": "pass",
+      "notes": "Manually verified all four commands end-to-end. add creates tasks, list shows them (with/without filter), complete marks them done, delete removes them. All produce correct output and confirmation messages."
+    },
+    {
+      "criterion": "Tasks persist across invocations (stored in todos.json)",
+      "status": "pass",
+      "notes": "Verified: task added in one invocation was visible in a subsequent list invocation. todos.json is written after every mutating operation. load_tasks() reads the file fresh on each invocation."
+    },
+    {
+      "criterion": "Error handling works for invalid task IDs",
+      "status": "pass",
+      "notes": "complete 999 and delete 999 both print 'Error: Task with ID 999 not found.' to stderr and exit with code 1. ValueError is raised in commands.py and caught in __main__.py."
+    },
+    {
+      "criterion": "Status filtering works on the list command",
+      "status": "pass",
+      "notes": "'list --status pending' and 'list --status done' both filter correctly. 'No tasks found.' is printed when the filter returns no results. Covered by test_list_tasks_filter_pending and test_list_tasks_filter_done."
+    },
+    {
+      "criterion": "At least 5 unit tests exist and all pass",
+      "status": "pass",
+      "notes": "24 tests exist across 3 test files. All 24 pass (run on Python 3.11.2 with pytest 9.0.2). 13 in test_commands.py, 5 in test_models.py, 6 in test_storage.py."
+    },
+    {
+      "criterion": "Code uses type hints on all function signatures",
+      "status": "partial",
+      "notes": "_format_task(task) -> str in __main__.py:10 is missing the type hint on the 'task' parameter. The parameter accepts a Task object but is unannotated. All 12 other functions across all modules are fully annotated."
+    },
+    {
+      "criterion": "The app is runnable via python -m todo",
+      "status": "pass",
+      "notes": "src/todo/__main__.py defines main() and is invokable via 'python -m todo' when src/ is on PYTHONPATH. The if __name__ == '__main__': guard at line 89-90 also enables direct execution."
+    },
+    {
+      "criterion": "JSON file format matches the data model specification",
+      "status": "pass",
+      "notes": "Observed todos.json output: [{\"id\": 1, \"title\": \"Buy groceries\", \"description\": \"Milk, eggs, bread\", \"status\": \"done\", \"created_at\": \"2026-02-20T20:29:44.050857+00:00\"}]. All five required fields present with correct types. ISO 8601 with UTC timezone offset."
+    }
+  ],
+  "code_quality": {
+    "issues": [
+      "_format_task() in src/todo/__main__.py:10 is missing a type annotation on its 'task' parameter. It should be 'def _format_task(task: Task) -> str:' (requires importing Task from .models). This violates the PRD's 'type hints on all functions' requirement.",
+      "pyproject.toml requires Python >= 3.12, but the installed Python is 3.11.2. Tests pass on 3.11 because no 3.12-specific syntax is used, but the declared constraint is incorrect and misleading for CI/CD environments.",
+      "todos.json is not excluded in .gitignore. The data file created by running the app will appear as an untracked file and could accidentally be committed. It is currently untracked in the repo.",
+      "storage.py:14 uses os.path.exists() followed by open() — a TOCTOU (time-of-check-time-of-use) race condition. In concurrent scenarios, the file could be deleted between the check and the open. Robust code would use try/except FileNotFoundError instead. Low risk for a local single-user CLI.",
+      "No tests cover the CLI layer (__main__.py) directly. cmd_add, cmd_list, cmd_complete, cmd_delete, build_parser, and main() are untested at the integration level. Coverage of the argparse wiring, output formatting (_format_task), and error exit codes relies solely on manual verification."
+    ],
+    "suggestions": [
+      "Add type annotation to _format_task(task: Task) -> str in __main__.py:10.",
+      "Add 'todos.json' to .gitignore to prevent accidental commits of the data file.",
+      "Add CLI-level tests using subprocess or capsys/monkeypatch to cover __main__.py command dispatch, output formatting, and exit codes.",
+      "Fix the requires-python version to '>=3.11' to match actual runtime, or upgrade the environment to Python 3.12.",
+      "Replace os.path.exists() + open() pattern in storage.py:14-18 with try/except FileNotFoundError for more idiomatic and race-safe file handling."
+    ]
+  },
+  "warnings": [
+    "Python version mismatch: pyproject.toml declares requires-python = '>=3.12' but tests were executed on Python 3.11.2. This will cause issues with any tooling that enforces version constraints (e.g., uv, pip, tox).",
+    "The todos.json file created during testing is present in the working directory as an untracked file and is not excluded by .gitignore. Running the app in the project root will produce a data file that may be accidentally committed.",
+    "No CLI/integration tests for __main__.py: the argparse setup, _format_task formatting, and printed output are not covered by the automated test suite. A bug in the CLI layer (e.g., wrong output format) would not be caught by tests.",
+    "The 'complete' command does not guard against completing an already-done task. Completing the same task twice silently succeeds with no error or warning. This is not addressed in the PRD but may be unexpected behavior."
+  ],
+  "summary": "The implementation is functionally complete and correct. All four CLI commands (add, list, complete, delete) work as specified, tasks persist to todos.json in the correct format, error handling for invalid IDs is properly implemented with non-zero exit codes, and status filtering works correctly. All 24 automated tests pass. The code is well-structured with a clean separation of concerns across models, storage, commands, and CLI layers. The primary deficiency against the PRD's evaluation criteria is a single missing type annotation on _format_task()'s 'task' parameter in __main__.py:10, which fails the 'type hints on all functions' requirement. Secondary concerns include a Python version mismatch in pyproject.toml (declares 3.12, runs on 3.11), absence of todos.json in .gitignore, and no automated test coverage of the CLI layer itself. Overall: PASS with minor issues."
+}
